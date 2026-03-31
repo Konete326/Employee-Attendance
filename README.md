@@ -1,37 +1,69 @@
-# Role-Based Employee Attendance System
+# Role-Based Employee Attendance System (RBEAS)
 
-This is a full-stack Next.js web application designed for a **Role-Based Employee Attendance System**. This application provides a platform for different roles (such as Admin and Employee) to log in securely and mark their attendance.
+A professional, full-stack **Role-Based Employee Attendance System** built with **Next.js 16 (App Router)** and **MongoDB**. This application provides a modern, secure, and responsive platform for managing employee attendance with distinct access levels for Administrators and Employees.
 
-## Features
-- **Role-Based Access Control (RBAC):** Distinct roles functionality where Admins can manage records while Employees can view and mark their attendance.
-- **Secure Authentication:** JSON Web Token (JWT) based login flow.
-- **Modern UI:** Built with Tailwind CSS v4, keeping the UI fully responsive and mobile-friendly.
-- **Serverless Database Connection:** Uses MongoDB Atlas for cloud storage.
+## 🚀 Key Features
 
-## Technology Stack
-- **Framework:** Next.js 16.2 (App Router)
-- **Frontend:** React 19.2
-- **Styling:** Tailwind CSS v4
-- **Language:** TypeScript 5.x
-- **Database:** MongoDB & Mongoose v9.x
-- **Auth:** `jsonwebtoken`, `bcryptjs`
-- **Icons:** `lucide-react`
+-   **Role-Based Access Control (RBAC):**
+    -   **Admin Dashboard:** Oversight of all employees, attendance logs, and system statistics.
+    -   **Employee Panel:** Secure personal dashboard to mark attendance (Check-in/Check-out) and view history.
+-   **Secure Authentication:** Full JWT-based authentication with protected API routes and server-side middleware.
+-   **Modern UI/UX:** Built with **Tailwind CSS v4**, featuring a sleek "Neu-Design" with interactive components and a responsive layout.
+-   **Real-time Stats:** Visual representation of attendance trends and employee status.
+-   **API Driven:** Module-wise backend architecture for scalability and clean code.
 
-## Getting Started
+## 🛠 Technology Stack
 
-1. Clone the repository
-2. Install dependencies:
+-   **Core:** Next.js 16.2.1 (App Router), React 19.2
+-   **Styling:** Tailwind CSS v4, Lucide Icons
+-   **Database:** MongoDB Atlas (Mongoose v9.x)
+-   **Security:** JSON Web Tokens (JWT), BcryptJS
+-   **Language:** TypeScript 5.x
+-   **State Management:** Server Actions & React Context
+
+## 📂 Project Structure
+
+```text
+├── app/                  # Next.js App Router (Auth, Dashboard, API)
+├── components/          # Reusable UI & Business Logic Components
+├── models/              # Mongoose Schemas (User, Attendance)
+├── lib/                 # Utility Hub (DB Connection, Auth Helpers)
+├── public/              # Static Assets
+└── types/               # TypeScript Type Definitions
+```
+
+## ⚙️ Getting Started
+
+### 1. Prerequisites
+- Node.js (Latest LTS recommended)
+- MongoDB Atlas Account
+
+### 2. Installation
 ```bash
+git clone https://github.com/Konete326/Employee-Attendance.git
+cd Employee-Attendance
 npm install
 ```
-3. Copy the `.env.example` file and rename it to `.env`:
-```bash
-cp .env.example .env
+
+### 3. Environment Setup
+Create a `.env` file in the root directory and add your credentials (refer to `.env.example`):
+```env
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
 ```
-4. Fill in the required environment variables in `.env`.
-5. Run the development server:
+
+### 4. Run Development Server
 ```bash
 npm run dev
 ```
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-The application will be running at [http://localhost:3000](http://localhost:3000).
+## 📜 Scripts
+- `npm run dev`: Starts the development server.
+- `npm run build`: Creates an optimized production build.
+- `npm run start`: Starts the application in production mode.
+- `npm run lint`: Checks for code quality and syntax errors.
+
+---
+
+**Developed with ❤️ by Ahmed**
