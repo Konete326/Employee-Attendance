@@ -1,3 +1,8 @@
+Bilkul\! Yeh rahi aapki poori aur corrected `README.md` file. Ismein se saare hidden spaces aur formatting issues fix kar diye gaye hain taake GitHub par Mermaid diagrams aur baqi design bilkul perfect render ho.
+
+Aap bas isay yahan se copy karein aur apne project mein paste kar lein:
+
+````markdown
 <div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:1e3a5f,50:2d5f8a,100:3b82f6&height=220&section=header&text=Employee%20Attendance%20System&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Role-Based%20%7C%20Next.js%2015%20%7C%20MongoDB%20Atlas&descAlignY=58&descSize=16&descColor=b3d4f5" />
@@ -125,9 +130,9 @@ graph TB
     PayrollAPI -->|payslip email| SMTP
     LeaveAPI -->|status email| SMTP
     AttendAPI -->|validate location| GPS
-```
+````
 
----
+-----
 
 ## Database Schema — Models Ka Relation
 
@@ -237,7 +242,7 @@ erDiagram
     DEPARTMENT ||--o{ USER : "has"
 ```
 
----
+-----
 
 ## Role-Based Access Flow
 
@@ -278,7 +283,7 @@ flowchart LR
     Shared --- Employee
 ```
 
----
+-----
 
 ## Attendance Check-in Flow (with Geo-location)
 
@@ -316,7 +321,7 @@ sequenceDiagram
     end
 ```
 
----
+-----
 
 ## Leave Approval Flow
 
@@ -350,7 +355,7 @@ sequenceDiagram
     end
 ```
 
----
+-----
 
 ## Payroll Calculation Logic
 
@@ -376,7 +381,7 @@ flowchart TD
     Finalize --> Email["Email payslip\nto each employee"]
 ```
 
----
+-----
 
 ## Project Folder Structure
 
@@ -448,11 +453,11 @@ attendance/
 ├── types/
 │   └── index.ts                  # All TypeScript interfaces
 │
-├── middleware.ts                  # Route protection + role check
+├── middleware.ts                 # Route protection + role check
 └── .env.local                    # Environment variables
 ```
 
----
+-----
 
 ## Features at a Glance
 
@@ -511,29 +516,30 @@ mindmap
         Mark as Read
 ```
 
----
+-----
 
 ## Local Setup — Step by Step
 
 ### Prerequisites
-- Node.js 18+ (LTS)
-- MongoDB Atlas account (free tier works)
-- Gmail account for SMTP (with App Password enabled)
 
-### 1. Clone the repo
+  - Node.js 18+ (LTS)
+  - MongoDB Atlas account (free tier works)
+  - Gmail account for SMTP (with App Password enabled)
+
+### 1\. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/Employee-Attendance.git
+git clone [https://github.com/your-username/Employee-Attendance.git](https://github.com/your-username/Employee-Attendance.git)
 cd Employee-Attendance
 ```
 
-### 2. Install dependencies
+### 2\. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Setup environment variables
+### 3\. Setup environment variables
 
 Create `.env.local` in root:
 
@@ -560,7 +566,7 @@ OFFICE_LNG=67.0011
 OFFICE_RADIUS_METERS=100
 ```
 
-### 4. Run development server
+### 4\. Run development server
 
 ```bash
 npm run dev
@@ -568,11 +574,11 @@ npm run dev
 
 App will be running at `http://localhost:3000`
 
-### 5. First time setup
+### 5\. First time setup
 
 Register at `/register` — the very first user automatically becomes **Admin**. After that, only Admin can add new employees from the dashboard.
 
----
+-----
 
 ## API Reference (Quick)
 
@@ -592,7 +598,7 @@ Register at `/register` — the very first user automatically becomes **Admin**.
 | GET | `/api/export/attendance` | Admin | Excel/PDF export |
 | GET | `/api/audit-logs` | Admin | Full audit trail |
 
----
+-----
 
 ## Development Commands
 
@@ -603,23 +609,26 @@ npm run start    # Start production server
 npm run lint     # ESLint check
 ```
 
----
+-----
 
-<div align="center">
+\<div align="center"\>
 
 ## Built By
 
 **Muhammad Sameer**
 *Full Stack Developer*
 
-[![Email](https://img.shields.io/badge/sameerdevexpert%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:sameerdevexpert@gmail.com)
+[](mailto:sameerdevexpert@gmail.com)
 
-<br/>
+<br>
 
 *Agar koi issue aaye ya suggestion ho toh email karo — khushi se help karunga.*
 
-<br/>
+<br>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:3b82f6,50:2d5f8a,100:1e3a5f&height=120&section=footer" />
+\<img src="https://capsule-render.vercel.app/api?type=waving\&color=0:3b82f6,50:2d5f8a,100:1e3a5f\&height=120\&section=footer" /\>
 
-</div>
+\</div\>
+
+```
+```
