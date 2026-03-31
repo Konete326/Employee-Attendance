@@ -606,25 +606,29 @@ npm run lint     # ESLint check
 ```
 
 -----
+<br/>
 
-\<div align="center"\>
+---
 
-## Built By
+<div align="center">
+
+## ✍️ Built By
 
 **Muhammad Sameer**
 *Full Stack Developer*
 
-[](mailto:sameerdevexpert@gmail.com)
+<br/>
 
-<br>
+[![Email](https://img.shields.io/badge/Email-sameerdevexpert%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:sameerdevexpert@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/your-profile-slug)
 
-*Agar koi issue aaye ya suggestion ho toh email karo — khushi se help karunga.*
+<br/>
+<br/>
 
-<br>
+> **Note:** Agar koi issue aaye ya suggestion ho toh email karo — khushi se help karunga! 🚀
 
-\<img src="https://capsule-render.vercel.app/api?type=waving\&color=0:3b82f6,50:2d5f8a,100:1e3a5f\&height=120\&section=footer" /\>
+<br/>
 
-\</div\>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:3b82f6,50:2d5f8a,100:1e3a5f&height=120&section=footer" />
 
-```
-```
+</div>
