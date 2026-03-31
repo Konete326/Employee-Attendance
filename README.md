@@ -1,8 +1,4 @@
-Bilkul\! Yeh rahi aapki poori aur corrected `README.md` file. Ismein se saare hidden spaces aur formatting issues fix kar diye gaye hain taake GitHub par Mermaid diagrams aur baqi design bilkul perfect render ho.
 
-Aap bas isay yahan se copy karein aur apne project mein paste kar lein:
-
-````markdown
 <div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:1e3a5f,50:2d5f8a,100:3b82f6&height=220&section=header&text=Employee%20Attendance%20System&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Role-Based%20%7C%20Next.js%2015%20%7C%20MongoDB%20Atlas&descAlignY=58&descSize=16&descColor=b3d4f5" />
