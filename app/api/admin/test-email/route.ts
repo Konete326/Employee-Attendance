@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/middleware-helpers";
 import { sendEmail, emailTemplates } from "@/lib/email";
-import { ApiResponse } from "@/types";
+import { ApiResponse, JWTPayload } from "@/types";
 
 // POST /api/admin/test-email - Send test email to admin
 export async function POST(
@@ -14,9 +14,9 @@ export async function POST(
       return authResult as NextResponse<ApiResponse<never>>;
     }
 
-    // Get admin email from request body or use a default
+    // Get admin email from request body or use authenticated user's email
     const body = await request.json().catch(() => ({}));
-    const adminEmail = body.email || authResult.email;
+    const adminEmail = body.email || (authResult as unknown as JWTPayload).email;
 
     if (!adminEmail) {
       return NextResponse.json(
