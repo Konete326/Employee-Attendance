@@ -4,6 +4,9 @@ import { requireAdmin } from "@/lib/middleware-helpers";
 import { hashPassword } from "@/lib/auth";
 import User from "@/models/User";
 import Attendance from "@/models/Attendance";
+import Department from "@/models/Department";
+import Shift from "@/models/Shift";
+import mongoose from "mongoose";
 import { ApiResponse, CreateEmployeeBody } from "@/types";
 
 // Helper function to generate unique employee ID
@@ -144,6 +147,44 @@ export async function POST(
     // Generate employee ID
     const employeeId = await generateEmployeeId();
 
+    // Process department - if it's a name, find or create the document
+    let finalDepartmentId = null;
+    if (department) {
+      if (mongoose.Types.ObjectId.isValid(department)) {
+        finalDepartmentId = department;
+      } else {
+        const deptDoc = await Department.findOne({ name: department.trim() });
+        if (deptDoc) {
+          finalDepartmentId = deptDoc._id;
+        } else {
+          const newDept = await Department.create({ name: department.trim() });
+          finalDepartmentId = newDept._id;
+        }
+      }
+    }
+
+    // Process shift - if it's a name, find or create the document
+    let finalShiftId = null;
+    if (shift) {
+      if (mongoose.Types.ObjectId.isValid(shift)) {
+        finalShiftId = shift;
+      } else {
+        const shiftDoc = await Shift.findOne({ name: { $regex: new RegExp(`^${shift.trim()}$`, 'i') } });
+        if (shiftDoc) {
+          finalShiftId = shiftDoc._id;
+        } else {
+          // Create default shift if not found by name
+          const newShift = await Shift.create({ 
+            name: shift.trim(),
+            startTime: "09:00",
+            endTime: "17:00",
+            workingHours: 8
+          });
+          finalShiftId = newShift._id;
+        }
+      }
+    }
+
     // Create user
     const user = await User.create({
       name: name.trim(),
@@ -151,8 +192,8 @@ export async function POST(
       password: hashedPassword,
       role: "employee",
       employeeId,
-      department: department || null,
-      shift: shift || null,
+      department: finalDepartmentId,
+      shift: finalShiftId,
       salary: salary || 0,
       joiningDate: joiningDate ? new Date(joiningDate) : new Date(),
       isActive: true,

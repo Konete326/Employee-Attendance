@@ -2,11 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 import User from "@/models/User";
+import Department from "@/models/Department";
+import mongoose from "mongoose";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, password } = body;
+    const { name, email, password, department } = body;
 
     // Validate required fields
     if (!name || !email || !password) {
@@ -39,6 +41,22 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
+    // Process department if provided
+    let finalDepartmentId = null;
+    if (department) {
+      if (mongoose.Types.ObjectId.isValid(department)) {
+        finalDepartmentId = department;
+      } else {
+        const deptDoc = await Department.findOne({ name: department.trim() });
+        if (deptDoc) {
+          finalDepartmentId = deptDoc._id;
+        } else {
+          const newDept = await Department.create({ name: department.trim() });
+          finalDepartmentId = newDept._id;
+        }
+      }
+    }
+
     // Create first user as admin
     const newUser = await User.create({
       name: name.trim(),
@@ -46,6 +64,7 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
       role: "admin",
       employeeId: "EMP-001",
+      department: finalDepartmentId,
     });
 
     // Return success response
