@@ -126,9 +126,9 @@ export default function AdminAuditLogsPage() {
       case "CREATE":
         return "success";
       case "UPDATE":
-        return "info";
+        return "accent";
       case "DELETE":
-        return "danger";
+        return "error";
       case "LOGIN":
       case "LOGOUT":
         return "default";
