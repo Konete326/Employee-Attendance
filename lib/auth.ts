@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import { JWTPayload } from "@/types";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -32,9 +32,9 @@ export async function comparePassword(
  */
 export function generateToken(userId: string, role: string): string {
   const payload: JWTPayload = { userId, email: "", role: role as JWTPayload["role"] };
-  return jwt.sign({ userId, role }, JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRES_IN || "7d",
-  });
+  const expiresIn = (process.env.JWT_EXPIRES_IN || "7d") as SignOptions["expiresIn"];
+  const options: SignOptions = { expiresIn };
+  return jwt.sign({ userId, role }, JWT_SECRET!, options);
 }
 
 /**
