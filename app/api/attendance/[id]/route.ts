@@ -12,11 +12,11 @@ export async function PUT(
   try {
     // Check admin authorization
     const authResult = await requireAdmin(request);
-    if ("error" in authResult) {
-      return authResult as NextResponse<ApiResponse<never>>;
+    if (authResult instanceof NextResponse) {
+      return authResult;
     }
 
-    const user = authResult as JWTPayload;
+    const user = authResult;
 
     const { id } = await params;
     const body: AttendanceOverrideBody = await request.json();
@@ -98,8 +98,8 @@ export async function GET(
   try {
     // Check admin authorization
     const authResult = await requireAdmin(request);
-    if ("error" in authResult) {
-      return authResult as NextResponse<ApiResponse<never>>;
+    if (authResult instanceof NextResponse) {
+      return authResult;
     }
 
     const { id } = await params;

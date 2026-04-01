@@ -45,8 +45,8 @@ export async function POST(
   try {
     // Check admin authorization
     const authResult = await requireAdmin(request);
-    if ("error" in authResult) {
-      return authResult as NextResponse<ApiResponse<never>>;
+    if (authResult instanceof NextResponse) {
+      return authResult;
     }
 
     const body: CreateShiftBody = await request.json();

@@ -40,8 +40,8 @@ export async function GET(
   try {
     // Check admin authorization
     const authResult = await requireAdmin(request);
-    if ("error" in authResult) {
-      return authResult as NextResponse<ApiResponse<never>>;
+    if (authResult instanceof NextResponse) {
+      return authResult;
     }
 
     await connectDB();

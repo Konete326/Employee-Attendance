@@ -12,8 +12,8 @@ export async function PUT(
   try {
     // Check admin authorization
     const authResult = await requireAdmin(request);
-    if ("error" in authResult) {
-      return authResult as NextResponse<ApiResponse<never>>;
+    if (authResult instanceof NextResponse) {
+      return authResult;
     }
 
     const { id } = await params;
@@ -92,8 +92,8 @@ export async function DELETE(
   try {
     // Check admin authorization
     const authResult = await requireAdmin(request);
-    if ("error" in authResult) {
-      return authResult as NextResponse<ApiResponse<never>>;
+    if (authResult instanceof NextResponse) {
+      return authResult;
     }
 
     const { id } = await params;
