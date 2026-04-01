@@ -71,3 +71,5 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: ['/dashboard/:path*', '/admin/:path*', '/employee/:path*', '/api/admin/:path*', '/login', '/register'],
 };
+
+export default proxy;
