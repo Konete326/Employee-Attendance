@@ -1,34 +1,73 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-/**
- * Proxy for route protection (previously Middleware)
- * - Protects /admin/* routes - requires token cookie
- * - Protects /employee/* routes - requires token cookie
- * - Public routes: /login, /register, /api/auth/*, /
- *
- * Note: Full JWT verification happens in API routes.
- * This proxy only checks for token presence.
- */
+function decodeJwt(token: string) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    return null;
+  }
+}
+
 export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const token = request.cookies.get('rbeas_token')?.value;
+  const path = request.nextUrl.pathname;
 
-  // Get token from cookies
-  const token = request.cookies.get("token")?.value;
+  // Protect dashboard, admin, employee and api/admin routes
+  if (path.startsWith('/dashboard') || path.startsWith('/admin') || path.startsWith('/employee') || path.startsWith('/api/admin')) {
+    if (!token) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
 
-  // If no token, redirect to login
-  if (!token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
+    const decoded = decodeJwt(token);
+    if (!decoded || !decoded.role) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    // Check expiration
+    if (decoded.exp && Date.now() >= decoded.exp * 1000) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    // Role check for admin routes
+    if (path.startsWith('/admin') || path.startsWith('/api/admin')) {
+      if (decoded.role !== 'admin') {
+        return NextResponse.redirect(new URL('/employee', request.url));
+      }
+    }
+
+    // Role check for employee routes
+    if (path.startsWith('/employee')) {
+      if (decoded.role !== 'employee') {
+        return NextResponse.redirect(new URL('/admin', request.url));
+      }
+    }
+
+    return NextResponse.next();
   }
 
-  // Token exists, allow the request to proceed
-  // Role-based verification happens in API routes
+  // Redirect signed-in users away from auth pages
+  if (path === '/login' || path === '/register') {
+    if (token) {
+      const decoded = decodeJwt(token);
+      if (decoded && (!decoded.exp || Date.now() < decoded.exp * 1000)) {
+        const dest = decoded.role === 'admin' ? '/admin' : '/employee';
+        return NextResponse.redirect(new URL(dest, request.url));
+      }
+    }
+  }
+
   return NextResponse.next();
 }
 
-// Configure matcher to only run on dashboard routes
 export const config = {
-  matcher: ["/admin/:path*", "/employee/:path*"],
+  matcher: ['/dashboard/:path*', '/admin/:path*', '/employee/:path*', '/api/admin/:path*', '/login', '/register'],
 };

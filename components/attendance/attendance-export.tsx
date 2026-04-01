@@ -1,6 +1,7 @@
 "use client";
 
-import { Download } from "lucide-react";
+import { useState } from "react";
+import { Download, Loader2, FileSpreadsheet, FileText } from "lucide-react";
 import { NeuButton } from "@/components/ui/neu-button";
 
 interface UserData {
@@ -24,6 +25,8 @@ interface AttendanceRecord {
 interface AttendanceExportProps {
   records: AttendanceRecord[];
   month?: string;
+  year?: string;
+  dept?: string;
 }
 
 function getUserName(userId: UserData | string): string {
@@ -116,28 +119,148 @@ function downloadCSV(csvContent: string, filename: string) {
   document.body.removeChild(link);
 }
 
-export function AttendanceExport({ records, month }: AttendanceExportProps) {
-  const handleExport = () => {
+export function AttendanceExport({ records, month, year, dept }: AttendanceExportProps) {
+  const [isExportingExcel, setIsExportingExcel] = useState(false);
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
+
+  // Get current month/year if not provided
+  const currentDate = new Date();
+  const exportMonth = month || String(currentDate.getMonth() + 1);
+  const exportYear = year || String(currentDate.getFullYear());
+
+  const handleExportCSV = () => {
     if (records.length === 0) {
       return;
     }
 
     const csvContent = generateCSV(records);
-    const fileMonth = month || new Date().toISOString().slice(0, 7);
-    const filename = `attendance-${fileMonth}.csv`;
-    
+    const fileMonth = exportMonth.padStart(2, "0");
+    const filename = `attendance-${exportYear}-${fileMonth}.csv`;
+
     downloadCSV(csvContent, filename);
   };
 
+  const handleExportExcel = async () => {
+    setIsExportingExcel(true);
+    try {
+      const params = new URLSearchParams();
+      params.append("format", "excel");
+      params.append("month", exportMonth);
+      params.append("year", exportYear);
+      if (dept) params.append("dept", dept);
+
+      const response = await fetch(`/api/export/attendance?${params.toString()}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to export");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+
+      // Get filename from Content-Disposition header or generate default
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let filename = `attendance-${exportYear}-${exportMonth}.xlsx`;
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="(.+)"/);
+        if (match) filename = match[1];
+      }
+
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Export Excel error:", error);
+      alert("Failed to export Excel. Please try again.");
+    } finally {
+      setIsExportingExcel(false);
+    }
+  };
+
+  const handleExportPDF = async () => {
+    setIsExportingPDF(true);
+    try {
+      const params = new URLSearchParams();
+      params.append("format", "pdf");
+      params.append("month", exportMonth);
+      params.append("year", exportYear);
+      if (dept) params.append("dept", dept);
+
+      const response = await fetch(`/api/export/attendance?${params.toString()}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to export");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+
+      // Get filename from Content-Disposition header or generate default
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let filename = `attendance-${exportYear}-${exportMonth}.pdf`;
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="(.+)"/);
+        if (match) filename = match[1];
+      }
+
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Export PDF error:", error);
+      alert("Failed to export PDF. Please try again.");
+    } finally {
+      setIsExportingPDF(false);
+    }
+  };
+
   return (
-    <NeuButton
-      variant="default"
-      size="sm"
-      onClick={handleExport}
-      disabled={records.length === 0}
-    >
-      <Download className="w-4 h-4 mr-2" />
-      Export CSV
-    </NeuButton>
+    <div className="flex gap-2">
+      <NeuButton
+        variant="ghost"
+        size="sm"
+        onClick={handleExportCSV}
+        disabled={records.length === 0}
+      >
+        <Download className="w-4 h-4 mr-2" />
+        CSV
+      </NeuButton>
+
+      <NeuButton
+        variant="ghost"
+        size="sm"
+        onClick={handleExportExcel}
+        disabled={isExportingExcel || records.length === 0}
+      >
+        {isExportingExcel ? (
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        ) : (
+          <FileSpreadsheet className="w-4 h-4 mr-2" />
+        )}
+        Excel
+      </NeuButton>
+
+      <NeuButton
+        variant="default"
+        size="sm"
+        onClick={handleExportPDF}
+        disabled={isExportingPDF || records.length === 0}
+      >
+        {isExportingPDF ? (
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        ) : (
+          <FileText className="w-4 h-4 mr-2" />
+        )}
+        PDF
+      </NeuButton>
+    </div>
   );
 }

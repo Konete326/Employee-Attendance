@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Pencil, Trash2, Search, Users, Loader2, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Users, Loader2, X, Download, FileSpreadsheet } from "lucide-react";
 import {
   NeuTable,
   NeuTableHeader,
@@ -22,7 +22,12 @@ interface Employee {
   name: string;
   email: string;
   role: "admin" | "employee";
-  department: string;
+  employeeId?: string;
+  department?: { _id: string; name: string } | null;
+  shift?: { _id: string; name: string } | null;
+  salary?: number;
+  joiningDate?: string;
+  isActive?: boolean;
   createdAt: string;
 }
 
@@ -32,6 +37,26 @@ interface EmployeeFormData {
   password: string;
   role: "admin" | "employee";
   department: string;
+  shift: string;
+  salary: string;
+  joiningDate: string;
+}
+
+interface Department {
+  _id: string;
+  name: string;
+}
+
+interface Shift {
+  _id: string;
+  name: string;
+}
+
+interface PaginationData {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }
 
 const roleOptions = [
@@ -56,6 +81,9 @@ const emptyFormData: EmployeeFormData = {
   password: "",
   role: "employee",
   department: "",
+  shift: "",
+  salary: "",
+  joiningDate: "",
 };
 
 export default function EmployeeManagementPage() {
@@ -112,7 +140,8 @@ export default function EmployeeManagementPage() {
       (emp) =>
         emp.name.toLowerCase().includes(query) ||
         emp.email.toLowerCase().includes(query) ||
-        emp.department.toLowerCase().includes(query)
+        emp.employeeId?.toLowerCase().includes(query) ||
+        emp.department?.name?.toLowerCase().includes(query)
     );
     setFilteredEmployees(filtered);
   }, [searchQuery, employees]);
@@ -244,7 +273,10 @@ export default function EmployeeManagementPage() {
       email: employee.email,
       password: "",
       role: employee.role,
-      department: employee.department,
+      department: employee.department?._id || "",
+      shift: employee.shift?._id || "",
+      salary: employee.salary?.toString() || "",
+      joiningDate: employee.joiningDate ? new Date(employee.joiningDate).toISOString().split('T')[0] : "",
     });
     setFormErrors({});
     setIsEditDialogOpen(true);
@@ -265,6 +297,39 @@ export default function EmployeeManagementPage() {
 
   const getRoleBadgeVariant = (role: string): "accent" | "default" => {
     return role === "admin" ? "accent" : "default";
+  };
+
+  // Handle export employees to Excel
+  const handleExportEmployees = async () => {
+    try {
+      const response = await fetch("/api/export/employees?format=excel");
+
+      if (!response.ok) {
+        throw new Error("Failed to export");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+
+      // Get filename from Content-Disposition header or generate default
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let filename = "employees-export.xlsx";
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="(.+)"/);
+        if (match) filename = match[1];
+      }
+
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Export employees error:", error);
+      alert("Failed to export employees. Please try again.");
+    }
   };
 
   if (isLoading) {
@@ -296,10 +361,16 @@ export default function EmployeeManagementPage() {
             Employee Management
           </h1>
         </div>
-        <NeuButton variant="accent" onClick={openAddDialog}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Employee
-        </NeuButton>
+        <div className="flex items-center gap-2">
+          <NeuButton variant="ghost" onClick={handleExportEmployees}>
+            <FileSpreadsheet className="w-4 h-4 mr-2" />
+            Export Excel
+          </NeuButton>
+          <NeuButton variant="accent" onClick={openAddDialog}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Employee
+          </NeuButton>
+        </div>
       </div>
 
       {/* Search */}
@@ -344,7 +415,7 @@ export default function EmployeeManagementPage() {
                     </NeuTableCell>
                     <NeuTableCell>{employee.email}</NeuTableCell>
                     <NeuTableCell>
-                      {employee.department || "—"}
+                      {employee.department?.name || "—"}
                     </NeuTableCell>
                     <NeuTableCell>
                       <NeuBadge variant={getRoleBadgeVariant(employee.role)}>

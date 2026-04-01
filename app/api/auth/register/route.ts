@@ -2,45 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 import User from "@/models/User";
-import { ApiResponse, RegisterRequestBody } from "@/types";
 
-export async function POST(
-  request: NextRequest
-): Promise<NextResponse<ApiResponse<unknown>>> {
+export async function POST(request: NextRequest) {
   try {
-    const body: RegisterRequestBody = await request.json();
-    const { name, email, password, role, department } = body;
+    const body = await request.json();
+    const { name, email, password } = body;
 
     // Validate required fields
     if (!name || !email || !password) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "Name, email, and password are required",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "Invalid email format",
-        },
+      return NextResponse.json(
+        { success: false, error: "Name, email, and password are required", code: "VALIDATION_ERROR" },
         { status: 400 }
       );
     }
 
     // Validate password length
     if (password.length < 6) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "Password must be at least 6 characters long",
-        },
+      return NextResponse.json(
+        { success: false, error: "Password must be at least 6 characters long", code: "VALIDATION_ERROR" },
         { status: 400 }
       );
     }
@@ -48,53 +27,46 @@ export async function POST(
     // Connect to database
     await connectDB();
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
-    if (existingUser) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "User with this email already exists",
-        },
-        { status: 409 }
+    // Check if any user exists
+    const userCount = await User.countDocuments();
+    if (userCount > 0) {
+      return NextResponse.json(
+        { success: false, error: "Registration is closed. Contact administrator to create an account.", code: "REGISTRATION_CLOSED" },
+        { status: 403 }
       );
     }
 
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Create new user
+    // Create first user as admin
     const newUser = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password: hashedPassword,
-      role: role || "employee",
-      department: department?.trim() || "",
+      role: "admin",
+      employeeId: "EMP-001",
     });
 
-    // Return success response (exclude password)
-    return NextResponse.json<ApiResponse<unknown>>(
+    // Return success response
+    return NextResponse.json(
       {
         success: true,
-        message: "User registered successfully",
+        message: "Admin user registered successfully",
         data: {
-          _id: newUser._id,
-          name: newUser.name,
-          email: newUser.email,
-          role: newUser.role,
-          department: newUser.department,
-          createdAt: newUser.createdAt,
+          user: {
+            id: newUser._id.toString(),
+            name: newUser.name,
+            role: newUser.role,
+          }
         },
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Registration error:", error);
-    return NextResponse.json<ApiResponse<never>>(
-      {
-        success: false,
-        error: "Internal server error",
-      },
+    return NextResponse.json(
+      { success: false, error: error.message || "Internal server error", code: "SERVER_ERROR" },
       { status: 500 }
     );
   }

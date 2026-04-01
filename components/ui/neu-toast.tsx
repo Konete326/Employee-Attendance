@@ -211,4 +211,63 @@ const useToast = () => {
   };
 };
 
-export { ToastProvider, useToast, type ToastType, type Toast };
+interface NeuToastProps {
+  message: string;
+  type: ToastType;
+  onClose: () => void;
+}
+
+const NeuToast: React.FC<NeuToastProps> = ({ message, type, onClose }) => {
+  const styles = toastStyles[type];
+
+  React.useEffect(() => {
+    const timer = setTimeout(onClose, 5000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div
+      className={cn(
+        "flex items-start gap-3 p-4",
+        "bg-[var(--neu-surface)]",
+        "border border-[var(--neu-border)]",
+        "border-l-4",
+        styles.border,
+        "rounded-[var(--neu-radius)]",
+        "shadow-[8px_8px_16px_var(--neu-shadow-dark),-8px_-8px_16px_var(--neu-shadow-light)]",
+        "animate-in slide-in-from-right-5 fade-in duration-300"
+      )}
+      role="alert"
+    >
+      <div className="flex-shrink-0">{styles.icon}</div>
+      <p className="flex-1 text-sm text-[var(--neu-text)]">{message}</p>
+      <button
+        onClick={onClose}
+        className={cn(
+          "flex-shrink-0 p-1 rounded",
+          "text-[var(--neu-text-muted)]",
+          "hover:text-[var(--neu-text)] hover:bg-[var(--neu-surface-light)]",
+          "transition-colors duration-150"
+        )}
+        aria-label="Close notification"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+  );
+};
+
+export { ToastProvider, useToast, NeuToast, type ToastType, type Toast };

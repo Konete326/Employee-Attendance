@@ -1,24 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import connectDB from "@/lib/db";
-import { comparePassword, signToken } from "@/lib/auth";
+import { comparePassword, generateToken } from "@/lib/auth";
 import User from "@/models/User";
-import { ApiResponse, LoginRequestBody } from "@/types";
 
-export async function POST(
-  request: NextRequest
-): Promise<NextResponse<ApiResponse<unknown>>> {
+export async function POST(request: NextRequest) {
   try {
-    const body: LoginRequestBody = await request.json();
+    const body = await request.json();
     const { email, password } = body;
 
     // Validate required fields
     if (!email || !password) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "Email and password are required",
-        },
+      return NextResponse.json(
+        { success: false, error: "Email and password are required", code: "VALIDATION_ERROR" },
         { status: 400 }
       );
     }
@@ -27,17 +21,19 @@ export async function POST(
     await connectDB();
 
     // Find user by email and include password for comparison
-    const user = await User.findOne({ email: email.toLowerCase() }).select(
-      "+password"
-    );
+    const user = await User.findOne({ email: email.toLowerCase() }).select("+password");
 
     if (!user) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "Invalid email or password",
-        },
+      return NextResponse.json(
+        { success: false, error: "Invalid email or password", code: "AUTH_ERROR" },
         { status: 401 }
+      );
+    }
+
+    if (!user.isActive) {
+      return NextResponse.json(
+        { success: false, error: "Account is inactive", code: "ACCOUNT_INACTIVE" },
+        { status: 403 }
       );
     }
 
@@ -45,55 +41,45 @@ export async function POST(
     const isPasswordValid = await comparePassword(password, user.password);
 
     if (!isPasswordValid) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "Invalid email or password",
-        },
+      return NextResponse.json(
+        { success: false, error: "Invalid email or password", code: "AUTH_ERROR" },
         { status: 401 }
       );
     }
 
     // Sign JWT token
-    const token = signToken({
-      userId: user._id.toString(),
-      email: user.email,
-      role: user.role,
-    });
+    const token = generateToken(user._id.toString(), user.role);
 
     // Set HTTP-only cookie
     const cookieStore = await cookies();
-    cookieStore.set("token", token, {
+    cookieStore.set("rbeas_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: "/",
     });
 
     // Return user data (without password)
-    return NextResponse.json<ApiResponse<unknown>>(
+    return NextResponse.json(
       {
         success: true,
         message: "Login successful",
         data: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          department: user.department,
-          createdAt: user.createdAt,
+          user: {
+            id: user._id.toString(),
+            name: user.name,
+            role: user.role,
+          },
+          token,
         },
       },
       { status: 200 }
     );
   } catch (error) {
     console.error("Login error:", error);
-    return NextResponse.json<ApiResponse<never>>(
-      {
-        success: false,
-        error: "Internal server error",
-      },
+    return NextResponse.json(
+      { success: false, error: "Internal server error", code: "SERVER_ERROR" },
       { status: 500 }
     );
   }

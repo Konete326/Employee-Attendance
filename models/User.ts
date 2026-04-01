@@ -25,14 +25,38 @@ const userSchema = new mongoose.Schema<IUser>(
       enum: ["admin", "employee"] as UserRole[],
       default: "employee",
     },
-    department: {
+    employeeId: {
       type: String,
-      default: "",
-      trim: true,
+      unique: true,
+      sparse: true,
     },
-    createdAt: {
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+    },
+    shift: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Shift",
+    },
+    salary: {
+      type: Number,
+      default: 0,
+    },
+    joiningDate: {
       type: Date,
       default: Date.now,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    leaveBalance: {
+      type: {
+        annual: { type: Number, default: 20 },
+        sick: { type: Number, default: 10 },
+        casual: { type: Number, default: 5 },
+      },
+      default: () => ({ annual: 20, sick: 10, casual: 5 }),
     },
   },
   {

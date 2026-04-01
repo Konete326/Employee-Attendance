@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/neu-toast";
+import { AnimatedBackground } from "@/components/ui/animated-background";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[var(--neu-bg)]">
+      <body className="min-h-full flex flex-col bg-black">
+        <AnimatedBackground />
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

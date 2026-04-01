@@ -1,30 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { ApiResponse } from "@/types";
 
-export async function POST(
-  request: NextRequest
-): Promise<NextResponse<ApiResponse<never>>> {
-  try {
-    // Delete the token cookie
-    const cookieStore = await cookies();
-    cookieStore.delete("token");
+export async function POST() {
+  const cookieStore = await cookies();
+  cookieStore.delete("rbeas_token");
 
-    return NextResponse.json<ApiResponse<never>>(
-      {
-        success: true,
-        message: "Logout successful",
-      },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error("Logout error:", error);
-    return NextResponse.json<ApiResponse<never>>(
-      {
-        success: false,
-        error: "Internal server error",
-      },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json(
+    { success: true, message: "Logged out successfully" },
+    { status: 200 }
+  );
 }

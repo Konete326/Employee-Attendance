@@ -33,7 +33,6 @@ export async function GET(
       email: "admin@attendance.com",
       password: hashedPassword,
       role: "admin",
-      department: "Management",
     });
 
     return NextResponse.json<ApiResponse<unknown>>(

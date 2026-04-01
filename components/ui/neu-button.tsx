@@ -3,7 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-type ButtonVariant = "default" | "accent" | "ghost" | "danger";
+type ButtonVariant = "default" | "accent" | "ghost" | "danger" | "outline";
 type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 interface NeuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -36,6 +36,12 @@ const variantStyles: Record<ButtonVariant, string> = {
   ghost: `
     bg-transparent text-[var(--neu-text)]
     border border-transparent
+    hover:bg-[var(--neu-surface-light)]
+    hover:text-[var(--neu-accent)]
+  `,
+  outline: `
+    bg-transparent text-[var(--neu-text)]
+    border border-[var(--neu-border)]
     hover:bg-[var(--neu-surface-light)]
     hover:text-[var(--neu-accent)]
   `,

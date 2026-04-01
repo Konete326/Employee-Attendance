@@ -12,7 +12,7 @@ export async function getAuthUser(
 ): Promise<JWTPayload | null> {
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
+    const token = cookieStore.get("rbeas_token")?.value;
 
     if (!token) {
       return null;

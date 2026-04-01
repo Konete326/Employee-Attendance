@@ -9,7 +9,7 @@ const attendanceSchema = new mongoose.Schema<IAttendance>(
       required: [true, "User ID is required"],
     },
     date: {
-      type: String, // YYYY-MM-DD format for easy querying
+      type: String,
       required: [true, "Date is required"],
     },
     checkIn: {
@@ -22,10 +22,14 @@ const attendanceSchema = new mongoose.Schema<IAttendance>(
     },
     status: {
       type: String,
-      enum: ["present", "absent", "late"] as AttendanceStatus[],
+      enum: ["present", "absent", "late", "half-day", "on-leave"] as AttendanceStatus[],
       default: "present",
     },
     hoursWorked: {
+      type: Number,
+      default: 0,
+    },
+    workingMinutes: {
       type: Number,
       default: 0,
     },
@@ -33,6 +37,23 @@ const attendanceSchema = new mongoose.Schema<IAttendance>(
       type: String,
       default: "",
       trim: true,
+    },
+    location: {
+      lat: { type: Number, default: null },
+      lng: { type: Number, default: null },
+    },
+    overriddenBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    overriddenAt: {
+      type: Date,
+      default: null,
+    },
+    outOfOffice: {
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -48,6 +69,9 @@ attendanceSchema.index({ date: 1 });
 
 // Index for user lookups
 attendanceSchema.index({ userId: 1 });
+
+// Index for status queries
+attendanceSchema.index({ status: 1 });
 
 // Prevent model overwrite during hot reload in development
 const Attendance =

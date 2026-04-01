@@ -4,9 +4,16 @@ import { requireAdmin } from "@/lib/middleware-helpers";
 import { hashPassword } from "@/lib/auth";
 import User from "@/models/User";
 import Attendance from "@/models/Attendance";
-import { ApiResponse } from "@/types";
+import { ApiResponse, CreateEmployeeBody } from "@/types";
 
-// GET - Fetch all employees
+// Helper function to generate unique employee ID
+async function generateEmployeeId(): Promise<string> {
+  const count = await User.countDocuments();
+  const nextNumber = count + 1;
+  return `EMP-${String(nextNumber).padStart(3, "0")}`;
+}
+
+// GET - Fetch all employees with pagination and filters
 export async function GET(
   request: NextRequest
 ): Promise<NextResponse<ApiResponse<unknown>>> {
@@ -22,28 +29,58 @@ export async function GET(
     // Parse query params
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search");
+    const department = searchParams.get("department");
+    const status = searchParams.get("status");
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "20");
 
     // Build query
     let query: Record<string, unknown> = {};
+    
     if (search) {
       query = {
         $or: [
           { name: { $regex: search, $options: "i" } },
           { email: { $regex: search, $options: "i" } },
+          { employeeId: { $regex: search, $options: "i" } },
         ],
       };
     }
+    
+    if (department) {
+      query.department = department;
+    }
+    
+    if (status) {
+      query.isActive = status === "active";
+    }
 
-    // Fetch users (exclude password field)
-    const users = await User.find(query)
-      .select("-password")
-      .sort({ name: 1 })
-      .lean();
+    // Calculate skip
+    const skip = (page - 1) * limit;
+
+    // Fetch users with pagination (exclude password field)
+    const [users, total] = await Promise.all([
+      User.find(query)
+        .select("-password")
+        .populate("department", "name")
+        .populate("shift", "name startTime endTime")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      User.countDocuments(query),
+    ]);
 
     return NextResponse.json<ApiResponse<unknown>>(
       {
         success: true,
         data: users,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
       },
       { status: 200 }
     );
@@ -53,6 +90,7 @@ export async function GET(
       {
         success: false,
         error: "Internal server error",
+        code: "SERVER_ERROR",
       },
       { status: 500 }
     );
@@ -72,8 +110,8 @@ export async function POST(
 
     await connectDB();
 
-    const body = await request.json();
-    const { name, email, password, role, department } = body;
+    const body: CreateEmployeeBody = await request.json();
+    const { name, email, password, department, shift, salary, joiningDate } = body;
 
     // Validate required fields
     if (!name || !email || !password) {
@@ -81,6 +119,7 @@ export async function POST(
         {
           success: false,
           error: "Name, email, and password are required",
+          code: "VALIDATION_ERROR",
         },
         { status: 400 }
       );
@@ -93,6 +132,7 @@ export async function POST(
         {
           success: false,
           error: "Email already exists",
+          code: "DUPLICATE_ERROR",
         },
         { status: 409 }
       );
@@ -101,24 +141,30 @@ export async function POST(
     // Hash password
     const hashedPassword = await hashPassword(password);
 
+    // Generate employee ID
+    const employeeId = await generateEmployeeId();
+
     // Create user
     const user = await User.create({
-      name,
-      email: email.toLowerCase(),
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       password: hashedPassword,
-      role: role || "employee",
-      department: department || "",
+      role: "employee",
+      employeeId,
+      department: department || null,
+      shift: shift || null,
+      salary: salary || 0,
+      joiningDate: joiningDate ? new Date(joiningDate) : new Date(),
+      isActive: true,
+      leaveBalance: { annual: 20, sick: 10, casual: 5 },
     });
 
     // Return user without password
-    const userResponse = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      department: user.department,
-      createdAt: user.createdAt,
-    };
+    const userResponse = await User.findById(user._id)
+      .select("-password")
+      .populate("department", "name")
+      .populate("shift", "name startTime endTime")
+      .lean();
 
     return NextResponse.json<ApiResponse<unknown>>(
       {
@@ -134,6 +180,7 @@ export async function POST(
       {
         success: false,
         error: "Internal server error",
+        code: "SERVER_ERROR",
       },
       { status: 500 }
     );
@@ -154,13 +201,14 @@ export async function PUT(
     await connectDB();
 
     const body = await request.json();
-    const { id, name, email, role, department, password } = body;
+    const { id, name, email, role, department, shift, salary, joiningDate, password, isActive } = body;
 
     if (!id) {
       return NextResponse.json<ApiResponse<never>>(
         {
           success: false,
           error: "Employee ID is required",
+          code: "VALIDATION_ERROR",
         },
         { status: 400 }
       );
@@ -173,6 +221,7 @@ export async function PUT(
         {
           success: false,
           error: "Employee not found",
+          code: "NOT_FOUND",
         },
         { status: 404 }
       );
@@ -186,6 +235,7 @@ export async function PUT(
           {
             success: false,
             error: "Email already exists",
+            code: "DUPLICATE_ERROR",
           },
           { status: 409 }
         );
@@ -196,7 +246,11 @@ export async function PUT(
     if (name) user.name = name;
     if (email) user.email = email.toLowerCase();
     if (role) user.role = role;
-    if (department !== undefined) user.department = department;
+    if (department !== undefined) user.department = department || null;
+    if (shift !== undefined) user.shift = shift || null;
+    if (salary !== undefined) user.salary = salary;
+    if (joiningDate) user.joiningDate = new Date(joiningDate);
+    if (isActive !== undefined) user.isActive = isActive;
 
     // Update password if provided
     if (password) {
@@ -206,14 +260,11 @@ export async function PUT(
     await user.save();
 
     // Return updated user without password
-    const userResponse = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      department: user.department,
-      createdAt: user.createdAt,
-    };
+    const userResponse = await User.findById(user._id)
+      .select("-password")
+      .populate("department", "name")
+      .populate("shift", "name startTime endTime")
+      .lean();
 
     return NextResponse.json<ApiResponse<unknown>>(
       {
@@ -229,16 +280,17 @@ export async function PUT(
       {
         success: false,
         error: "Internal server error",
+        code: "SERVER_ERROR",
       },
       { status: 500 }
     );
   }
 }
 
-// DELETE - Delete employee
+// DELETE - Soft delete employee
 export async function DELETE(
   request: NextRequest
-): Promise<NextResponse<ApiResponse<unknown>>> {
+): Promise<NextResponse<ApiResponse<null>>> {
   try {
     // Verify admin access
     const adminCheck = await requireAdmin(request);
@@ -267,6 +319,7 @@ export async function DELETE(
         {
           success: false,
           error: "Employee ID is required",
+          code: "VALIDATION_ERROR",
         },
         { status: 400 }
       );
@@ -279,21 +332,21 @@ export async function DELETE(
         {
           success: false,
           error: "Employee not found",
+          code: "NOT_FOUND",
         },
         { status: 404 }
       );
     }
 
-    // Delete all attendance records for this user
-    await Attendance.deleteMany({ userId: id });
+    // Soft delete - set isActive to false
+    user.isActive = false;
+    await user.save();
 
-    // Delete user
-    await User.findByIdAndDelete(id);
-
-    return NextResponse.json<ApiResponse<unknown>>(
+    return NextResponse.json<ApiResponse<null>>(
       {
         success: true,
-        message: "Employee and associated attendance records deleted successfully",
+        message: "Employee deactivated successfully",
+        data: null,
       },
       { status: 200 }
     );
@@ -303,6 +356,7 @@ export async function DELETE(
       {
         success: false,
         error: "Internal server error",
+        code: "SERVER_ERROR",
       },
       { status: 500 }
     );

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-type BadgeVariant = "present" | "absent" | "late" | "default" | "accent";
+type BadgeVariant = "present" | "absent" | "late" | "default" | "accent" | "success" | "error" | "warning";
 
 interface NeuBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
@@ -35,6 +35,21 @@ const variantStyles: Record<BadgeVariant, { dot: string; bg: string; text: strin
     dot: "bg-[var(--neu-accent)]",
     bg: "bg-[rgba(129,140,248,0.15)]",
     text: "text-[var(--neu-accent)]",
+  },
+  success: {
+    dot: "bg-[var(--neu-success)]",
+    bg: "bg-[rgba(52,211,153,0.15)]",
+    text: "text-[var(--neu-success)]",
+  },
+  error: {
+    dot: "bg-[var(--neu-danger)]",
+    bg: "bg-[rgba(248,113,113,0.15)]",
+    text: "text-[var(--neu-danger)]",
+  },
+  warning: {
+    dot: "bg-[var(--neu-warning)]",
+    bg: "bg-[rgba(251,191,36,0.15)]",
+    text: "text-[var(--neu-warning)]",
   },
 };
 
