@@ -3,6 +3,7 @@ import connectDB from "@/lib/db";
 import { requireAdmin } from "@/lib/middleware-helpers";
 import Payroll from "@/models/Payroll";
 import { ApiResponse, UpdatePayrollBody } from "@/types";
+import { createNotification } from "@/lib/notifications";
 
 // PUT /api/payroll/[id] - Update payroll (edit bonuses only in draft)
 export async function PUT(
@@ -125,6 +126,15 @@ export async function PATCH(
     payroll.status = "finalized";
     payroll.finalizedAt = new Date();
     await payroll.save();
+
+    // Create notification for the user
+    await createNotification({
+      userId: payroll.userId,
+      title: "Payslip Published",
+      message: `Your payslip for ${new Date(payroll.year, payroll.month - 1).toLocaleString("en-US", { month: "long" })} ${payroll.year} has been generated and is now available for download.`,
+      type: "success",
+      link: "/employee/payslip",
+    });
 
     const updated = await Payroll.findById(id)
       .populate("userId", "name email employeeId")

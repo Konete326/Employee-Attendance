@@ -5,6 +5,7 @@ import Leave from "@/models/Leave";
 import User from "@/models/User";
 import Attendance from "@/models/Attendance";
 import { ApiResponse, ApproveLeaveBody } from "@/types";
+import { createNotification } from "@/lib/notifications";
 
 // PUT /api/leaves/[id]/approve - Admin approves leave
 export async function PUT(
@@ -108,6 +109,15 @@ export async function PUT(
     if (attendanceRecords.length > 0) {
       await Attendance.insertMany(attendanceRecords);
     }
+
+    // Create notification for the user
+    await createNotification({
+      userId: leave.userId,
+      title: "Leave Approved",
+      message: `Your ${leave.leaveType} leave for ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()} has been approved.`,
+      type: "success",
+      link: "/employee/leaves",
+    });
 
     const populatedLeave = await Leave.findById(leave._id)
       .populate("userId", "name email")

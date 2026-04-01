@@ -3,6 +3,7 @@ import connectDB from "@/lib/db";
 import { requireAdmin } from "@/lib/middleware-helpers";
 import Leave from "@/models/Leave";
 import { ApiResponse, ApproveLeaveBody } from "@/types";
+import { createNotification } from "@/lib/notifications";
 
 // PUT /api/leaves/[id]/reject - Admin rejects leave
 export async function PUT(
@@ -50,6 +51,15 @@ export async function PUT(
     leave.approvedBy = authResult.userId;
     leave.adminComment = body.adminComment || "";
     await leave.save();
+
+    // Create notification for the user
+    await createNotification({
+      userId: leave.userId,
+      title: "Leave Rejected",
+      message: `Your leave request from ${new Date(leave.startDate).toLocaleDateString()} to ${new Date(leave.endDate).toLocaleDateString()} has been rejected.${body.adminComment ? ` Reason: ${body.adminComment}` : ""}`,
+      type: "error",
+      link: "/employee/leaves",
+    });
 
     const populatedLeave = await Leave.findById(leave._id)
       .populate("userId", "name email")
