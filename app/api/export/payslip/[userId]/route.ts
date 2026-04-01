@@ -72,7 +72,7 @@ export async function GET(
     const monthName = new Date(year, month - 1).toLocaleString("en-US", { month: "long" });
 
     // Create PDF
-    const doc = new jsPDF();
+    const doc = new jsPDF() as any; // Cast to any to access autoTable plugin properties
 
     // Company Header
     doc.setFontSize(20);
@@ -90,24 +90,24 @@ export async function GET(
     doc.setFontSize(10);
     doc.setTextColor(30, 30, 30);
 
-    const empName = (employee as unknown as { name: string }).name;
-    const empId = (employee as unknown as { employeeId?: string }).employeeId || "N/A";
+    const empName = (employee as any).name || "Employee";
+    const empId = (employee as any).employeeId || "N/A";
 
     doc.text(`Employee Name: ${empName}`, 20, 50);
     doc.text(`Employee ID: ${empId}`, 20, 58);
     doc.text(`Period: ${monthName} ${year}`, 20, 66);
 
     doc.text(`Generated: ${new Date().toLocaleDateString("en-US")}`, 120, 50);
-    doc.text(`Status: ${payroll.status.toUpperCase()}`, 120, 58);
+    doc.text(`Status: ${(payroll.status || "unpaid").toUpperCase()}`, 120, 58);
 
     // Earnings Table
     const earningsData = [
-      ["Basic Salary", `$${payroll.basicSalary.toFixed(2)}`],
-      ["Present Days", payroll.presentDays.toString()],
-      ["Bonuses", `$${payroll.bonuses.toFixed(2)}`],
+      ["Basic Salary", `$${(payroll.basicSalary || 0).toFixed(2)}`],
+      ["Present Days", (payroll.presentDays || 0).toString()],
+      ["Bonuses", `$${(payroll.bonuses || 0).toFixed(2)}`],
     ];
 
-    (doc as jsPDF & { autoTable: (options: unknown) => void }).autoTable({
+    doc.autoTable({
       startY: 85,
       head: [["Description", "Amount"]],
       body: earningsData,
@@ -118,14 +118,14 @@ export async function GET(
 
     // Deductions Table
     const deductionsData = [
-      ["Absent Deduction", `$${payroll.absentDeduction.toFixed(2)}`],
-      ["Late Deduction", `$${payroll.lateDeduction.toFixed(2)}`],
-      ["Unpaid Leave Deduction", `$${payroll.unpaidLeaveDeduction.toFixed(2)}`],
+      ["Absent Deduction", `$${(payroll.absentDeduction || 0).toFixed(2)}`],
+      ["Late Deduction", `$${(payroll.lateDeduction || 0).toFixed(2)}`],
+      ["Unpaid Leave Deduction", `$${(payroll.unpaidLeaveDeduction || 0).toFixed(2)}`],
     ];
 
-    const finalY = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable?.finalY || 110;
+    const finalY = (doc as any).lastAutoTable?.finalY || 110;
 
-    (doc as jsPDF & { autoTable: (options: unknown) => void }).autoTable({
+    doc.autoTable({
       startY: finalY + 10,
       head: [["Deduction", "Amount"]],
       body: deductionsData,
@@ -135,14 +135,14 @@ export async function GET(
     });
 
     // Net Salary Box
-    const netY = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable?.finalY || 150;
+    const netY = (doc as any).lastAutoTable?.finalY || 150;
 
     doc.setFillColor(30, 58, 95);
     doc.rect(14, netY + 15, 180, 20, "F");
 
     doc.setFontSize(12);
     doc.setTextColor(255, 255, 255);
-    doc.text(`Net Salary: $${payroll.netSalary.toFixed(2)}`, 20, netY + 28);
+    doc.text(`Net Salary: $${(payroll.netSalary || 0).toFixed(2)}`, 20, netY + 28);
 
     // Footer
     doc.setFontSize(8);
@@ -150,9 +150,9 @@ export async function GET(
     doc.text("This is a computer-generated payslip and does not require a signature.", 14, doc.internal.pageSize.height - 20);
     doc.text("For queries, please contact HR department.", 14, doc.internal.pageSize.height - 15);
 
-    const pdfBuffer = doc.output("arraybuffer");
+    const pdfBuffer = Buffer.from(doc.output("arraybuffer"));
 
-    return new NextResponse(Buffer.from(pdfBuffer), {
+    return new NextResponse(pdfBuffer, {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",

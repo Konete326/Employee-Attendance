@@ -7,6 +7,7 @@ import { NeuBadge } from "@/components/ui/neu-badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Spinner } from "@/components/ui/spinner";
 import { CheckCircle, XCircle, Calendar } from "lucide-react";
+import { useToast } from "@/components/ui/neu-toast";
 
 interface LeaveRequest {
   _id: string;
@@ -24,6 +25,7 @@ export default function AdminLeavesPage() {
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const { error: toastError, success: toastSuccess } = useToast();
 
   useEffect(() => {
     fetchLeaves();
@@ -37,9 +39,12 @@ export default function AdminLeavesPage() {
       const data = await response.json();
       if (data.success) {
         setLeaves(data.data);
+      } else {
+        toastError(data.error || "Failed to fetch leaves");
       }
     } catch (error) {
       console.error("Failed to fetch leaves", error);
+      toastError("An unexpected error occurred while fetching leaves");
     } finally {
       setLoading(false);
     }
@@ -53,11 +58,17 @@ export default function AdminLeavesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
-      if (response.ok) {
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        toastSuccess("Leave request approved successfully");
         fetchLeaves();
+      } else {
+        toastError(data.error || "Failed to approve leave");
       }
     } catch (error) {
       console.error("Failed to approve leave", error);
+      toastError("An unexpected error occurred during approval");
     } finally {
       setActionLoading(null);
     }
