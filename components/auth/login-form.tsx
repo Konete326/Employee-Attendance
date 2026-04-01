@@ -97,7 +97,10 @@ export default function LoginForm() {
 
   return (
     <NeuCard className="w-full max-w-md mx-auto">
-      <NeuCardHeader className="text-center">
+      <NeuCardHeader className="text-center pt-8">
+        <div className="flex justify-center mb-6">
+          <img src="/logo.png" alt="AttendEase Logo" className="h-20 w-auto object-contain" />
+        </div>
         <NeuCardTitle className="text-2xl">Welcome Back</NeuCardTitle>
         <NeuCardDescription>
           Sign in to your AttendEase account

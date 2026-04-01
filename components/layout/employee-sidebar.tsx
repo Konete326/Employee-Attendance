@@ -52,14 +52,13 @@ export function EmployeeSidebar() {
         )}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center justify-center border-b border-[var(--neu-border)]">
+        <div className="h-20 flex items-center justify-center border-b border-[var(--neu-border)] p-4">
           <Link href="/employee" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[var(--neu-accent)] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">A</span>
-            </div>
-            <span className="text-xl font-bold text-[var(--neu-text)]">
-              AttendEase
-            </span>
+            <img 
+              src="/logo.png" 
+              alt="AttendEase Logo" 
+              className="h-12 w-auto object-contain mx-auto" 
+            />
           </Link>
         </div>
 

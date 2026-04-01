@@ -66,16 +66,16 @@ export function AdminSidebar() {
         )}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center justify-center border-b border-[var(--neu-border)]">
+        <div className="h-20 flex items-center justify-center border-b border-[var(--neu-border)] p-4">
           <Link href="/admin" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[var(--neu-accent)] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">A</span>
-            </div>
-            {!isCollapsed && (
-              <span className="text-xl font-bold text-[var(--neu-text)]">
-                AttendEase
-              </span>
-            )}
+            <img 
+              src="/logo.png" 
+              alt="AttendEase Logo" 
+              className={cn(
+                "transition-all duration-300",
+                isCollapsed ? "w-10 h-10 object-contain" : "h-12 w-auto object-contain"
+              )} 
+            />
           </Link>
         </div>
 

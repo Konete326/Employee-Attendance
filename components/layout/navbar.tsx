@@ -125,10 +125,9 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href={user.role === "admin" ? "/dashboard" : "/employee"}
-          className="flex items-center gap-2 text-[var(--neu-text)] hover:text-[var(--neu-accent)] transition-colors"
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
         >
-          <Clock className="w-6 h-6 text-[var(--neu-accent)]" />
-          <span className="font-semibold text-lg">AttendEase</span>
+          <img src="/logo.png" alt="AttendEase Logo" className="h-10 w-auto object-contain" />
         </Link>
 
         {/* Desktop Navigation */}
