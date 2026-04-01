@@ -16,6 +16,8 @@ import {
   Settings,
   Menu,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -80,9 +82,14 @@ export function AdminSidebar() {
         {/* Toggle button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden lg:flex absolute -right-3 top-20 w-6 h-6 bg-[var(--neu-accent)] rounded-full items-center justify-center text-white text-xs"
+          className={cn(
+            "hidden lg:flex absolute right-2 top-4 w-8 h-8 bg-[var(--neu-surface)] rounded-lg items-center justify-center text-[var(--neu-text-secondary)] shadow-sm z-50 hover:bg-[var(--neu-accent)] hover:text-white transition-all",
+            "border border-white/5",
+            isCollapsed && "right-[-40px] bg-[var(--neu-accent)] text-white" // When collapsed, stick it out slightly so it's clickable
+          )}
+          title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          {isCollapsed ? ">" : "<"}
+          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </button>
 
         {/* Nav items */}
