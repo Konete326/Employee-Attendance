@@ -1,7 +1,10 @@
-
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1e3a5f,50:2d5f8a,100:3b82f6&height=220&section=header&text=Employee%20Attendance%20System&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Role-Based%20%7C%20Next.js%2015%20%7C%20MongoDB%20Atlas&descAlignY=58&descSize=16&descColor=b3d4f5" />
+<img src="public/logo.png" width="250" alt="AttendEase Logo" />
+
+<br/>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1e3a5f,50:2d5f8a,100:3b82f6&height=180&section=header&text=AttendEase&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Role-Based%20Employee%20Attendance%20System&descAlignY=58&descSize=16&descColor=b3d4f5" />
 
 <br/>
 
