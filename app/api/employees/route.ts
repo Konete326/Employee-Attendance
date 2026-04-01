@@ -287,8 +287,45 @@ export async function PUT(
     if (name) user.name = name;
     if (email) user.email = email.toLowerCase();
     if (role) user.role = role;
-    if (department !== undefined) user.department = department || null;
-    if (shift !== undefined) user.shift = shift || null;
+    
+    // Process department update
+    if (department !== undefined) {
+      if (!department) {
+        user.department = null;
+      } else if (mongoose.Types.ObjectId.isValid(department)) {
+        user.department = department;
+      } else {
+        const deptDoc = await Department.findOne({ name: department.trim() });
+        if (deptDoc) {
+          user.department = deptDoc._id;
+        } else {
+          const newDept = await Department.create({ name: department.trim() });
+          user.department = newDept._id;
+        }
+      }
+    }
+
+    // Process shift update
+    if (shift !== undefined) {
+      if (!shift) {
+        user.shift = null;
+      } else if (mongoose.Types.ObjectId.isValid(shift)) {
+        user.shift = shift;
+      } else {
+        const shiftDoc = await Shift.findOne({ name: { $regex: new RegExp(`^${shift.trim()}$`, 'i') } });
+        if (shiftDoc) {
+          user.shift = shiftDoc._id;
+        } else {
+          const newShift = await Shift.create({ 
+            name: shift.trim(),
+            startTime: "09:00",
+            endTime: "17:00",
+            workingHours: 8
+          });
+          user.shift = newShift._id;
+        }
+      }
+    }
     if (salary !== undefined) user.salary = salary;
     if (joiningDate) user.joiningDate = new Date(joiningDate);
     if (isActive !== undefined) user.isActive = isActive;
