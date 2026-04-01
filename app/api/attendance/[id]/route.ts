@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import { requireAdmin } from "@/lib/middleware-helpers";
 import Attendance from "@/models/Attendance";
-import { ApiResponse, AttendanceOverrideBody } from "@/types";
+import { ApiResponse, AttendanceOverrideBody, JWTPayload } from "@/types";
 
 // PUT /api/attendance/[id] - Admin override attendance status
 export async function PUT(
@@ -15,6 +15,8 @@ export async function PUT(
     if ("error" in authResult) {
       return authResult as NextResponse<ApiResponse<never>>;
     }
+
+    const user = authResult as JWTPayload;
 
     const { id } = await params;
     const body: AttendanceOverrideBody = await request.json();
@@ -56,7 +58,7 @@ export async function PUT(
         ? `${attendance.notes} | Admin: ${body.notes}`
         : `Admin: ${body.notes}`;
     }
-    attendance.overriddenBy = authResult.userId;
+    attendance.overriddenBy = user.userId;
     attendance.overriddenAt = new Date();
 
     await attendance.save();
