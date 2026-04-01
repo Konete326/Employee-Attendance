@@ -80,12 +80,12 @@ export default function LoginForm() {
         return;
       }
 
-      // Redirect based on role
+      // Redirect based on role with a full page refresh to ensure layouts sync with the new session
       const userRole = data.data?.role;
       if (userRole === "admin") {
-        router.push("/admin");
+        window.location.href = "/admin";
       } else {
-        router.push("/employee");
+        window.location.href = "/employee";
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
