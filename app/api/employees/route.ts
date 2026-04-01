@@ -84,12 +84,12 @@ export async function GET(
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Get employees error:", error);
     return NextResponse.json<ApiResponse<never>>(
       {
         success: false,
-        error: "Internal server error",
+        error: error.message || "Internal server error",
         code: "SERVER_ERROR",
       },
       { status: 500 }
@@ -174,12 +174,12 @@ export async function POST(
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Create employee error:", error);
     return NextResponse.json<ApiResponse<never>>(
       {
         success: false,
-        error: "Internal server error",
+        error: error.message || "Internal server error",
         code: "SERVER_ERROR",
       },
       { status: 500 }
@@ -274,12 +274,12 @@ export async function PUT(
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Update employee error:", error);
     return NextResponse.json<ApiResponse<never>>(
       {
         success: false,
-        error: "Internal server error",
+        error: error.message || "Internal server error",
         code: "SERVER_ERROR",
       },
       { status: 500 }
@@ -350,12 +350,12 @@ export async function DELETE(
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Delete employee error:", error);
     return NextResponse.json<ApiResponse<never>>(
       {
         success: false,
-        error: "Internal server error",
+        error: error.message || "Internal server error",
         code: "SERVER_ERROR",
       },
       { status: 500 }

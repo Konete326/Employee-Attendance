@@ -66,7 +66,12 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error("Registration error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Internal server error", code: "SERVER_ERROR" },
+      { 
+        success: false, 
+        error: error.message || "An unexpected error occurred during registration", 
+        code: "SERVER_ERROR",
+        details: error.name || "UnknownError"
+      },
       { status: 500 }
     );
   }

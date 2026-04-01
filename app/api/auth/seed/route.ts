@@ -51,12 +51,12 @@ export async function GET(
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Seed error:", error);
     return NextResponse.json<ApiResponse<never>>(
       {
         success: false,
-        error: "Internal server error",
+        error: error.message || "Internal server error",
       },
       { status: 500 }
     );

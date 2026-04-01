@@ -76,10 +76,10 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Login error:", error);
     return NextResponse.json(
-      { success: false, error: "Internal server error", code: "SERVER_ERROR" },
+      { success: false, error: error.message || "Internal server error", code: "SERVER_ERROR" },
       { status: 500 }
     );
   }
