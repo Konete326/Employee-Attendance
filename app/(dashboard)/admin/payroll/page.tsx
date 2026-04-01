@@ -9,7 +9,7 @@ import { DollarSign, Download } from "lucide-react";
 
 interface PayrollRecord {
   _id: string;
-  userId: { name: string; employeeId?: string };
+  userId: { _id: string; name: string; employeeId?: string };
   month: number;
   year: number;
   basicSalary: number;
