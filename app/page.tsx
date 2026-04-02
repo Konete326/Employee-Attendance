@@ -6,6 +6,7 @@ import { Clock, LogIn, LayoutDashboard, BarChart3 } from "lucide-react";
 import NeuralBackground from "@/components/ui/flow-field-background";
 import { NeuButton } from "@/components/ui/neu-button";
 import { NeuCard, NeuCardContent } from "@/components/ui/neu-card";
+import ProjectRadarSection from "@/components/home/project-radar-section";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -128,6 +129,9 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {/* Project Details Radar Section */}
+        <ProjectRadarSection />
 
         {/* Footer */}
         <footer className="relative z-10 py-6 text-center">
