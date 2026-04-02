@@ -115,7 +115,21 @@ export default function EmployeeLeavesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold">Leave Management</h2>
+          <p className="text-sm text-[var(--neu-text-secondary)] mt-1">
+            Request and track your leave balance
+          </p>
+        </div>
+        <NeuButton onClick={() => setShowApplyModal(true)} variant="accent" className="w-full sm:w-auto">
+          <Calendar className="w-4 h-4" />
+          Apply for Leave
+        </NeuButton>
+      </div>
+
       {/* Leave Balance Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <NeuCard>
@@ -139,14 +153,6 @@ export default function EmployeeLeavesPage() {
             <p className="text-xs text-[var(--neu-text-secondary)]">days remaining</p>
           </NeuCardContent>
         </NeuCard>
-      </div>
-
-      {/* Apply Button */}
-      <div className="flex justify-end">
-        <NeuButton onClick={() => setShowApplyModal(true)} variant="accent">
-          <Calendar className="w-4 h-4" />
-          Apply for Leave
-        </NeuButton>
       </div>
 
       {/* Leave History */}

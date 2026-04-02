@@ -63,13 +63,13 @@ export default function EmployeeAttendancePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">My Attendance</h2>
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 className="text-2xl font-bold">My Attendance History</h2>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           <select
             value={month}
             onChange={(e) => setMonth(parseInt(e.target.value))}
-            className="px-3 py-2 rounded-lg bg-[var(--neu-surface)] border border-[var(--neu-border)]"
+            className="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-[var(--neu-surface)] border border-[var(--neu-border)] text-sm outline-none transition-colors hover:border-[var(--neu-accent)]/50 focus:border-[var(--neu-accent)]"
           >
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i + 1} value={i + 1}>
@@ -80,7 +80,7 @@ export default function EmployeeAttendancePage() {
           <select
             value={year}
             onChange={(e) => setYear(parseInt(e.target.value))}
-            className="px-3 py-2 rounded-lg bg-[var(--neu-surface)] border border-[var(--neu-border)]"
+            className="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-[var(--neu-surface)] border border-[var(--neu-border)] text-sm outline-none transition-colors hover:border-[var(--neu-accent)]/50 focus:border-[var(--neu-accent)]"
           >
             {[2024, 2025, 2026].map((y) => (
               <option key={y} value={y}>{y}</option>

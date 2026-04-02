@@ -4,11 +4,12 @@ import * as React from "react";
 import { CalendarDays, Clock, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { NeuCard, NeuCardHeader, NeuCardTitle, NeuCardContent } from "@/components/ui/neu-card";
 import { NeuStatCard } from "@/components/ui/neu-stat-card";
-import { NeuTable, NeuTableHeader, NeuTableBody, NeuTableRow, NeuTableHead, NeuTableCell } from "@/components/ui/neu-table";
 import { NeuBadge } from "@/components/ui/neu-badge";
-import { NeuButton } from "@/components/ui/neu-button";
+import { cn } from "@/lib/utils";
 import CheckInOutPanel from "@/components/attendance/check-in-out-panel";
 import { ChipLoader } from "@/components/ui/chip-loader";
+import { List2, ListItem } from "@/components/ui/list-2";
+import { UserIcon, MapPin, Clock as ClockIcon } from "lucide-react";
 
 interface User {
   _id: string;
@@ -192,15 +193,15 @@ export default function EmployeeDashboard() {
       {/* Recent Attendance History */}
       <NeuCard>
         <NeuCardHeader>
-          <div className="flex items-center justify-between">
-            <NeuCardTitle>Recent Attendance</NeuCardTitle>
-            <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-[var(--neu-text-secondary)]">Month:</label>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <NeuCardTitle>Recent Attendance History</NeuCardTitle>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <label className="text-sm font-medium text-[var(--neu-text-secondary)] whitespace-nowrap">View Month:</label>
               <input
                 type="month"
                 value={currentMonth}
                 onChange={(e) => setCurrentMonth(e.target.value)}
-                className="px-3 py-1.5 rounded-lg border border-[var(--neu-border)] bg-[var(--neu-bg)] text-sm font-medium text-[var(--neu-text)] focus:outline-none focus:ring-2 focus:ring-[var(--neu-accent)]/20 transition-all"
+                className="w-full sm:w-auto px-3 py-1.5 rounded-lg border border-[var(--neu-border)] bg-[var(--neu-bg)] text-sm font-medium text-[var(--neu-text)] focus:outline-none focus:ring-2 focus:ring-[var(--neu-accent)]/20 transition-all cursor-pointer"
               />
             </div>
           </div>
@@ -213,40 +214,32 @@ export default function EmployeeDashboard() {
               No attendance records for this month
             </p>
           ) : (
-            <NeuTable>
-              <NeuTableHeader>
-                <NeuTableRow>
-                  <NeuTableHead>Date</NeuTableHead>
-                  <NeuTableHead>Check In</NeuTableHead>
-                  <NeuTableHead>Check Out</NeuTableHead>
-                  <NeuTableHead>Hours</NeuTableHead>
-                  <NeuTableHead>Status</NeuTableHead>
-                </NeuTableRow>
-              </NeuTableHeader>
-              <NeuTableBody>
-                {records.slice(0, 30).map((record) => (
-                  <NeuTableRow key={record._id}>
-                    <NeuTableCell className="font-medium text-[var(--neu-text)]">
-                      {formatDisplayDate(record.date)}
-                    </NeuTableCell>
-                    <NeuTableCell>
-                      {record.checkIn ? formatShortTime(record.checkIn) : "-"}
-                    </NeuTableCell>
-                    <NeuTableCell>
-                      {record.checkOut ? formatShortTime(record.checkOut) : "-"}
-                    </NeuTableCell>
-                    <NeuTableCell>
+            <List2 
+              items={records.slice(0, 31).map((record) => ({
+                icon: <ClockIcon className={cn("w-5 h-5", record.status === "late" ? "text-[var(--neu-warning)]" : "text-[var(--neu-accent)]")} />,
+                title: formatDisplayDate(record.date),
+                category: "LOGGED ENTRY",
+                description: (
+                  <div className="flex items-center gap-3 text-sm">
+                    <span className="opacity-70">
+                      {record.checkIn ? formatShortTime(record.checkIn) : "--:--"}
+                    </span>
+                    <span>→</span>
+                    <span className="opacity-70">
+                      {record.checkOut ? formatShortTime(record.checkOut) : "--:--"}
+                    </span>
+                    <span className="ml-2 font-black text-[var(--neu-text)]">
                       {record.hoursWorked ? `${record.hoursWorked.toFixed(1)}h` : "-"}
-                    </NeuTableCell>
-                    <NeuTableCell>
-                      <NeuBadge variant={record.status}>
-                        {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-                      </NeuBadge>
-                    </NeuTableCell>
-                  </NeuTableRow>
-                ))}
-              </NeuTableBody>
-            </NeuTable>
+                    </span>
+                  </div>
+                ),
+                status: (
+                  <NeuBadge variant={record.status === "present" ? "success" : record.status === "late" ? "warning" : "error"}>
+                    {record.status.toUpperCase()}
+                  </NeuBadge>
+                )
+              }))}
+            />
           )}
         </NeuCardContent>
       </NeuCard>

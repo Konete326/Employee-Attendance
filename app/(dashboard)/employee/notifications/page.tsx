@@ -96,33 +96,33 @@ export default function EmployeeNotificationsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-bold">Notifications</h2>
-        <div className="flex items-center gap-4">
-          <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
+          <div className="flex gap-2 w-full sm:w-auto">
             <button
               onClick={() => setFilter("all")}
-              className={`px-3 py-1 rounded-lg text-sm ${
+              className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm transition-all ${
                 filter === "all"
-                  ? "bg-[var(--neu-accent)] text-white"
-                  : "bg-[var(--neu-surface)] text-[var(--neu-text-secondary)]"
+                  ? "bg-[var(--neu-accent)] text-white shadow-lg"
+                  : "bg-[var(--neu-surface)] text-[var(--neu-text-secondary)] hover:bg-[var(--neu-surface-light)]"
               }`}
             >
               All
             </button>
             <button
               onClick={() => setFilter("unread")}
-              className={`px-3 py-1 rounded-lg text-sm ${
+              className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm transition-all ${
                 filter === "unread"
-                  ? "bg-[var(--neu-accent)] text-white"
-                  : "bg-[var(--neu-surface)] text-[var(--neu-text-secondary)]"
+                  ? "bg-[var(--neu-accent)] text-white shadow-lg"
+                  : "bg-[var(--neu-surface)] text-[var(--neu-text-secondary)] hover:bg-[var(--neu-surface-light)]"
               }`}
             >
               Unread
             </button>
           </div>
-          <NeuButton onClick={markAllAsRead} variant="ghost" size="sm">
-            <CheckCheck className="w-4 h-4 mr-1" />
+          <NeuButton onClick={markAllAsRead} variant="ghost" size="sm" className="w-full sm:w-auto">
+            <CheckCheck className="w-4 h-4" />
             Mark all read
           </NeuButton>
         </div>

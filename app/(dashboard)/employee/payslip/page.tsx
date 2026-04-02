@@ -103,7 +103,7 @@ export default function EmployeePayslipPage() {
         />
       ) : (
         <NeuCard>
-          <NeuCardContent className="p-8">
+          <NeuCardContent className="p-4 sm:p-8 space-y-8">
             {/* Header */}
             <div className="border-b border-[var(--neu-border)] pb-6 mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">

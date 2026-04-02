@@ -44,19 +44,19 @@ export const List2 = ({
           {items.map((item, index) => (
             <React.Fragment key={index}>
               <div className="flex flex-col transition-all hover:bg-white/[0.03]">
-                <div className="grid items-center gap-4 px-6 py-6 md:grid-cols-4">
-                  <div className="order-2 flex items-center gap-4 md:order-none">
+                <div className="grid items-center gap-4 px-4 py-4 md:px-6 md:py-6 md:grid-cols-4">
+                  <div className="order-1 flex items-center gap-4 md:order-none">
                     <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--neu-surface)] shadow-[inset_2px_2px_4px_var(--neu-shadow-dark),inset_-2px_-2px_4px_var(--neu-shadow-light)] text-[var(--neu-accent)]">
                       {item.icon}
                     </span>
                     <div className="flex flex-col gap-0.5">
-                      <h3 className="font-bold text-[var(--neu-text)] tracking-tight">{item.title}</h3>
-                      <p className="text-xs font-semibold text-[var(--neu-text-secondary)] uppercase tracking-wider">
+                      <h3 className="font-bold text-[var(--neu-text)] tracking-tight line-clamp-1">{item.title}</h3>
+                      <p className="text-[10px] md:text-xs font-semibold text-[var(--neu-text-secondary)] uppercase tracking-wider">
                         {item.category}
                       </p>
                     </div>
                   </div>
-                  <div className="order-1 text-lg font-bold md:order-none md:col-span-2 text-[var(--neu-text)]">
+                  <div className="order-2 text-base md:text-lg font-bold md:order-none md:col-span-2 text-[var(--neu-text)]">
                     {item.description}
                   </div>
                   <div className="flex items-center gap-3 ml-auto order-3 md:order-none">

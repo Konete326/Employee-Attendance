@@ -160,9 +160,9 @@ export default function CheckInOutPanel() {
         <div className="flex flex-col items-center space-y-6">
           {/* Live Clock */}
           <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Clock className="w-6 h-6 text-[var(--neu-accent)]" />
-              <span className="text-5xl font-bold text-[var(--neu-text)] tracking-tight" suppressHydrationWarning>
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Clock className="w-5 h-5 md:w-6 md:h-6 text-[var(--neu-accent)]" />
+              <span className="text-3xl md:text-5xl font-bold text-[var(--neu-text)] tracking-tight" suppressHydrationWarning>
                 {currentTime ? formatTime(currentTime) : "--:--:-- --"}
               </span>
             </div>
