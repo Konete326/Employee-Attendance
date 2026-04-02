@@ -5,9 +5,9 @@ import { NeuCard, NeuCardContent } from "@/components/ui/neu-card";
 import { NeuButton } from "@/components/ui/neu-button";
 import { NeuBadge } from "@/components/ui/neu-badge";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Spinner } from "@/components/ui/spinner";
 import { CheckCircle, XCircle, Calendar } from "lucide-react";
 import { useToast } from "@/components/ui/neu-toast";
+import { ChipLoader } from "@/components/ui/chip-loader";
 
 interface LeaveRequest {
   _id: string;
@@ -103,28 +103,30 @@ export default function AdminLeavesPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
+  // Note: We use the overlay mode in the return block instead of an early return 
+  // to prevent layout jumps and allow the user to see the background structure while loading.
+
+  const isLoading = loading;
 
   return (
-    <div className="space-y-6">
+    <div className="relative space-y-6" style={{ minHeight: "400px" }}>
+      {/* Overlay loader — blurs behind without shifting layout */}
+      {isLoading && (
+        <ChipLoader overlay size="md" label="Loading" />
+      )}
+
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-bold">Leave Management</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           {["all", "pending", "approved", "rejected"].map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1 rounded-lg text-sm capitalize ${
+              className={`px-3 py-1 flex-1 sm:flex-none text-center rounded-lg text-sm capitalize transition-all duration-200 ${
                 filter === f
-                  ? "bg-[var(--neu-accent)] text-white"
-                  : "bg-[var(--neu-surface)] text-[var(--neu-text-secondary)]"
+                  ? "bg-[var(--neu-accent)] text-white shadow-sm scale-105"
+                  : "bg-[var(--neu-surface)] text-[var(--neu-text-secondary)] hover:bg-[var(--neu-surface-light)] hover:text-[var(--neu-text)]"
               }`}
             >
               {f}
@@ -143,7 +145,7 @@ export default function AdminLeavesPage() {
               description={`No ${filter !== "all" ? filter : ""} leave requests found.`}
             />
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto -mx-2 px-2">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-[var(--neu-border)]">
