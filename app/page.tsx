@@ -7,7 +7,7 @@ import NeuralBackground from "@/components/ui/flow-field-background";
 import { NeuButton } from "@/components/ui/neu-button";
 import ProjectRadarSection from "@/components/home/project-radar-section";
 import { FlickeringFooter } from "@/components/ui/flickering-footer";
-import { BentoGrid, attendEaseBentoItems, statsBentoItems, quickActionsBentoItems } from "@/components/ui/bento-grid";
+import { BentoGrid, attendEaseBentoItems, statsBentoItems } from "@/components/ui/bento-grid";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -104,19 +104,6 @@ export default function Home() {
             </p>
           </div>
           <BentoGrid items={attendEaseBentoItems} />
-        </section>
-
-        {/* Quick Actions - Bento Grid */}
-        <section className="px-4 pb-16">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-[var(--neu-text)] mb-2">
-              Quick Actions
-            </h2>
-            <p className="text-[var(--neu-text-secondary)]">
-              Get started with these essential features
-            </p>
-          </div>
-          <BentoGrid items={quickActionsBentoItems} />
         </section>
 
         {/* Project Details Radar Section */}
