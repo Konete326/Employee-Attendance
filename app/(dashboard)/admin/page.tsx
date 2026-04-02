@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AttendanceStats } from "@/components/attendance/attendance-stats";
 import { AttendanceFilters, FilterState } from "@/components/attendance/attendance-filters";
 import { AttendanceTable } from "@/components/attendance/attendance-table";
 import { AttendanceExport } from "@/components/attendance/attendance-export";
 import { NeuCard, NeuCardHeader, NeuCardTitle, NeuCardContent } from "@/components/ui/neu-card";
 import { NeuButton } from "@/components/ui/neu-button";
+import { ChipLoader } from "@/components/ui/chip-loader";
 
 interface AttendanceStatsData {
   totalEmployees: number;
@@ -187,8 +188,15 @@ export default function AdminDashboardPage() {
     );
   }
 
+  const isLoading = isLoadingStats || isLoadingRecords;
+
   return (
-    <div className="space-y-8">
+    <div className="relative space-y-8" style={{ minHeight: "400px" }}>
+      {/* Overlay loader — blurs behind without shifting layout */}
+      {isLoading && (
+        <ChipLoader overlay size="md" label="Loading" />
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-4">
@@ -216,7 +224,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <AttendanceStats stats={stats} isLoading={isLoadingStats} />
+      <AttendanceStats stats={stats} isLoading={false} />
 
       {/* Filters */}
       <AttendanceFilters onFilter={handleFilter} initialFilters={filters} />
@@ -227,45 +235,37 @@ export default function AdminDashboardPage() {
           <NeuCardTitle>Attendance Records</NeuCardTitle>
         </NeuCardHeader>
         <NeuCardContent>
-          {isLoadingRecords ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-[var(--neu-accent)]" />
-            </div>
-          ) : (
-            <>
-              <AttendanceTable records={paginatedRecords} />
+          <AttendanceTable records={paginatedRecords} />
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex items-center justify-between mt-6 pt-4 border-t border-[var(--neu-border)]">
-                  <p className="text-sm text-[var(--neu-text-secondary)]">
-                    Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
-                    {Math.min(currentPage * ITEMS_PER_PAGE, filteredRecords.length)} of{" "}
-                    {filteredRecords.length} records
-                  </p>
-                  <div className="flex gap-2">
-                    <NeuButton
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                      disabled={currentPage === 1}
-                    >
-                      <ChevronLeft className="w-4 h-4 mr-1" />
-                      Previous
-                    </NeuButton>
-                    <NeuButton
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={currentPage === totalPages}
-                    >
-                      Next
-                      <ChevronRight className="w-4 h-4 ml-1" />
-                    </NeuButton>
-                  </div>
-                </div>
-              )}
-            </>
+          {/* Pagination */}
+          {!isLoadingRecords && totalPages > 1 && (
+            <div className="flex items-center justify-between mt-6 pt-4 border-t border-[var(--neu-border)]">
+              <p className="text-sm text-[var(--neu-text-secondary)]">
+                Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
+                {Math.min(currentPage * ITEMS_PER_PAGE, filteredRecords.length)} of{" "}
+                {filteredRecords.length} records
+              </p>
+              <div className="flex gap-2">
+                <NeuButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="w-4 h-4 mr-1" />
+                  Previous
+                </NeuButton>
+                <NeuButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </NeuButton>
+              </div>
+            </div>
           )}
         </NeuCardContent>
       </NeuCard>

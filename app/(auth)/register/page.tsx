@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 import RegisterForm from "@/components/auth/register-form";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 // Dynamically import NeuralBackground to avoid SSR issues with canvas
 const NeuralBackground = dynamic(
@@ -20,8 +22,17 @@ export default function RegisterPage() {
         trailOpacity={0.15}
       />
 
+      {/* Back to Home button */}
+      <Link
+        href="/"
+        className="absolute top-4 left-4 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--neu-surface)]/80 backdrop-blur-sm border border-[var(--neu-border)] text-[var(--neu-text-secondary)] hover:text-[var(--neu-accent)] hover:border-[var(--neu-accent)]/40 transition-all duration-200 text-sm font-medium"
+      >
+        <ArrowLeft size={16} />
+        Back to Home
+      </Link>
+
       {/* Content Overlay */}
-      <div className="absolute inset-0 flex items-center justify-center p-4">
+      <div className="absolute inset-0 flex items-center justify-center p-4 pt-16">
         <div className="w-full max-w-md">
           {/* App Title */}
           <div className="text-center mb-8">
