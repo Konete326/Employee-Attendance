@@ -298,40 +298,49 @@ export default function AdminAttendancePage() {
       )}
 
       {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col lg:flex-row gap-4 items-center bg-white/5 p-4 rounded-xl border border-white/10">
+        <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-start bg-[var(--neu-surface)] p-1 rounded-lg border border-[var(--neu-border)]">
           <NeuButton
             size="icon"
             variant="ghost"
             onClick={() => setCurrentMonth(getPreviousMonth(currentMonth))}
+            className="h-9 w-9"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4" />
           </NeuButton>
-          <span className="text-lg font-medium min-w-[150px] text-center">
+          <span className="text-sm font-bold min-w-[120px] text-center text-[var(--neu-text)] uppercase tracking-wider">
             {currentMonth ? getMonthName(currentMonth) : ""}
           </span>
           <NeuButton
             size="icon"
             variant="ghost"
             onClick={() => setCurrentMonth(getNextMonth(currentMonth))}
+            className="h-9 w-9"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4" />
           </NeuButton>
         </div>
-        <div className="flex-1" />
-        <NeuSelect
-          options={statusOptions}
-          value={filters.status}
-          onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-          className="w-40"
-        />
-        <NeuInput
-          placeholder="Search employees..."
-          value={filters.search}
-          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          icon={<Filter className="w-4 h-4" />}
-          className="w-64"
-        />
+
+        <div className="flex flex-col sm:flex-row gap-4 w-full flex-1">
+          <div className="flex-1">
+            <NeuSelect
+              options={statusOptions}
+              value={filters.status}
+              onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+              className="w-full h-11"
+              placeholder="All Statuses"
+            />
+          </div>
+          <div className="flex-[2]">
+            <NeuInput
+              placeholder="Search by name, email or ID..."
+              value={filters.search}
+              onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+              icon={<Filter className="w-4 h-4" />}
+              className="w-full h-11"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Attendance Table */}
