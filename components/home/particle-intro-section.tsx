@@ -33,25 +33,25 @@ const WORD_DESCRIPTIONS: Record<string, string> = {
 
 export default function ParticleIntroSection() {
   return (
-    <section className="relative w-full px-4 py-12 md:py-20">
+    <section className="relative w-full px-4 py-20 md:py-32">
       {/* ── Headings ── */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.55 }}
-        className="mb-8 text-center"
+        transition={{ duration: 0.65 }}
+        className="mb-12 text-center"
       >
-        <span className="mb-3 inline-block rounded-full border border-[var(--neu-accent)]/30 bg-[var(--neu-accent)]/10 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--neu-accent)]">
+        <span className="mb-4 inline-block rounded-full border border-[var(--neu-accent)]/30 bg-[var(--neu-accent)]/10 px-5 py-1.5 text-xs font-semibold uppercase tracking-widest text-[var(--neu-accent)]">
           Interactive Introduction
         </span>
-        <h2 className="text-3xl font-bold text-[var(--neu-text)] md:text-4xl">
+        <h1 className="text-4xl font-extrabold text-[var(--neu-text)] md:text-6xl lg:text-7xl">
           Meet{" "}
           <span className="bg-gradient-to-r from-[var(--neu-accent)] to-purple-400 bg-clip-text text-transparent">
             AttendEase
           </span>
-        </h2>
-        <p className="mx-auto mt-2 max-w-lg text-sm text-[var(--neu-text-secondary)] md:text-base">
+        </h1>
+        <p className="mx-auto mt-4 max-w-2xl text-base text-[var(--neu-text-secondary)] md:text-xl">
           Watch every feature come to life — particles rearrange into the next
           idea every few seconds. Right-click to scatter them.
         </p>
@@ -59,20 +59,20 @@ export default function ParticleIntroSection() {
 
       {/* ── Canvas wrapper ── */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.97 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.15 }}
-        className="mx-auto w-full max-w-4xl rounded-2xl border border-[var(--neu-accent)]/10 p-1 shadow-[0_0_60px_-10px_rgba(129,140,248,0.25)]"
+        transition={{ duration: 0.7, delay: 0.2 }}
+        className="mx-auto w-full max-w-6xl rounded-[2.5rem] border border-[var(--neu-accent)]/10 p-2 shadow-[0_0_80px_-20px_rgba(129,140,248,0.3)]"
         style={{
           background:
-            "linear-gradient(135deg,rgba(129,140,248,0.08),rgba(99,102,241,0.03))",
+            "linear-gradient(135deg,rgba(129,140,248,0.12),rgba(99,102,241,0.05))",
         }}
       >
         <ParticleTextEffect
           words={PROJECT_WORDS}
-          canvasWidth={1000}
-          canvasHeight={280}
+          canvasWidth={1200}
+          canvasHeight={450}
           intervalMs={3000}
         />
       </motion.div>

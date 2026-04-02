@@ -1,53 +1,69 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import RegisterForm from "@/components/auth/register-form";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { AuthUI } from "@/components/ui/auth-fuse";
 
-// Dynamically import NeuralBackground to avoid SSR issues with canvas
-const NeuralBackground = dynamic(
-  () => import("@/components/ui/flow-field-background"),
-  { ssr: false }
-);
+interface RegisterResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+  data?: {
+    _id: string;
+    name: string;
+    email: string;
+    role: string;
+    department: string;
+    createdAt: string;
+  };
+}
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSignUp = async (data: { name: string; email: string; password: string; department?: string }) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result: RegisterResponse = await response.json();
+
+      if (!response.ok || !result.success) {
+        setError(result.error || "Registration failed. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Redirect to login page on success
+      router.push("/login");
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Registration error:", err);
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
-      {/* Neural Background */}
-      <NeuralBackground
-        color="#818cf8"
-        particleCount={600}
-        speed={0.8}
-        trailOpacity={0.15}
-      />
-
-      {/* Back to Home button */}
-      <Link
-        href="/"
-        className="absolute top-4 left-4 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--neu-surface)]/80 backdrop-blur-sm border border-[var(--neu-border)] text-[var(--neu-text-secondary)] hover:text-[var(--neu-accent)] hover:border-[var(--neu-accent)]/40 transition-all duration-200 text-sm font-medium"
-      >
-        <ArrowLeft size={16} />
-        Back to Home
-      </Link>
-
-      {/* Content Overlay */}
-      <div className="absolute inset-0 flex items-center justify-center p-4 pt-16">
-        <div className="w-full max-w-md">
-          {/* App Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">
-              <span className="text-[var(--neu-accent)]">Attend</span>Ease
-            </h1>
-            <p className="text-[var(--neu-text-secondary)]">
-              Create your account
-            </p>
-          </div>
-
-          {/* Register Form */}
-          <RegisterForm />
-        </div>
-      </div>
-    </div>
+    <AuthUI
+      onSignUpSubmit={handleSignUp}
+      isLoading={isLoading}
+      error={error}
+      signUpContent={{
+        quote: {
+          text: "Join us today! Start managing your team's attendance efficiently.",
+          author: "AttendEase Team"
+        }
+      }}
+    />
   );
 }

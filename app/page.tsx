@@ -6,6 +6,7 @@ import { Clock } from "lucide-react";
 import NeuralBackground from "@/components/ui/flow-field-background";
 import { NeuButton } from "@/components/ui/neu-button";
 import ProjectRadarSection from "@/components/home/project-radar-section";
+import ParticleIntroSection from "@/components/home/particle-intro-section";
 import { FlickeringFooter } from "@/components/ui/flickering-footer";
 import { BentoGrid, attendEaseBentoItems, statsBentoItems } from "@/components/ui/bento-grid";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
@@ -31,8 +32,11 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="relative z-10 flex flex-col flex-1">
-        {/* Hero Section */}
-        <section className="flex-1 flex flex-col items-center justify-center px-4 py-16">
+        {/* Particle Text Intro Section (Hero) */}
+        <ParticleIntroSection />
+
+        {/* Descriptive Hero Section */}
+        <section className="flex flex-col items-center justify-center px-4 py-16">
           <div
             className={`text-center max-w-3xl mx-auto transition-all duration-700 ease-out ${
               mounted
@@ -48,14 +52,14 @@ export default function Home() {
             </div>
 
             {/* Title */}
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
               <span className="bg-gradient-to-r from-[var(--neu-accent)] to-purple-400 bg-clip-text text-transparent">
-                AttendEase
+                AttendEase Management
               </span>
-            </h1>
+            </h2>
 
             {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-[var(--neu-text)] mb-3">
+            <p className="text-lg md:text-xl text-[var(--neu-text)] mb-3">
               Smart Employee Attendance Management
             </p>
 
