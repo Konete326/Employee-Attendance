@@ -7,6 +7,7 @@ import NeuralBackground from "@/components/ui/flow-field-background";
 import { NeuButton } from "@/components/ui/neu-button";
 import { NeuCard, NeuCardContent } from "@/components/ui/neu-card";
 import ProjectRadarSection from "@/components/home/project-radar-section";
+import ParticleIntroSection from "@/components/home/particle-intro-section";
 import dynamic from "next/dynamic";
 
 const AttendCinematicHero = dynamic(
@@ -105,6 +106,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Particle Text Intro Section */}
+        <ParticleIntroSection />
 
         {/* Features Section */}
         <section className="px-4 pb-16">
