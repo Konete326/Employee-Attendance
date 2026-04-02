@@ -218,6 +218,15 @@ export function AttendCinematicHero({
     return () => { window.removeEventListener("mousemove", onMove); cancelAnimationFrame(rafRef.current); };
   }, []);
 
+  // Refresh ScrollTrigger after full page render so positions are calculated correctly
+  // (necessary because the hero is below other sections that affect total page height)
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Cinematic scroll timeline
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
@@ -241,8 +250,10 @@ export function AttendCinematicHero({
           start: "top top",
           end: "+=7000",
           pin: true,
-          scrub: 1,
+          pinType: "transform",   // ← required: body has overflow-x:hidden which breaks position:fixed pins
+          scrub: 1.2,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
         },
       });
 
