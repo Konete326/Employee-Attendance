@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Clock, LogIn, LayoutDashboard, BarChart3 } from "lucide-react";
+import { Clock } from "lucide-react";
 import NeuralBackground from "@/components/ui/flow-field-background";
 import { NeuButton } from "@/components/ui/neu-button";
-import { NeuCard, NeuCardContent } from "@/components/ui/neu-card";
 import ProjectRadarSection from "@/components/home/project-radar-section";
-import ParticleIntroSection from "@/components/home/particle-intro-section";
 import { FlickeringFooter } from "@/components/ui/flickering-footer";
+import { BentoGrid, attendEaseBentoItems, statsBentoItems, quickActionsBentoItems } from "@/components/ui/bento-grid";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -16,27 +15,6 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const features = [
-    {
-      icon: <LogIn className="w-8 h-8 text-[var(--neu-accent)]" />,
-      title: "Quick Check-in",
-      description:
-        "One-click check-in and check-out with automatic time tracking",
-    },
-    {
-      icon: <LayoutDashboard className="w-8 h-8 text-[var(--neu-accent)]" />,
-      title: "Admin Dashboard",
-      description:
-        "Comprehensive overview of attendance, reports, and employee management",
-    },
-    {
-      icon: <BarChart3 className="w-8 h-8 text-[var(--neu-accent)]" />,
-      title: "Detailed Reports",
-      description:
-        "Weekly and monthly reports with attendance stats and export options",
-    },
-  ];
 
   return (
     <div className="relative flex flex-col min-h-screen">
@@ -102,37 +80,43 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Particle Text Intro Section */}
-        <ParticleIntroSection />
-
-        {/* Features Section */}
-        <section className="px-4 pb-16">
-          <div
-            className={`max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-700 ease-out delay-300 ${
-              mounted
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-4"
-            }`}
-          >
-            {features.map((feature, index) => (
-              <NeuCard
-                key={index}
-                variant="raised"
-                hover
-                className="text-center"
-              >
-                <NeuCardContent>
-                  <div className="flex justify-center mb-4">{feature.icon}</div>
-                  <h3 className="text-lg font-semibold text-[var(--neu-text)] mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-[var(--neu-text-secondary)]">
-                    {feature.description}
-                  </p>
-                </NeuCardContent>
-              </NeuCard>
-            ))}
+        {/* Stats Section - Bento Grid */}
+        <section className="px-4 py-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--neu-text)] mb-2">
+              Powerful & Scalable
+            </h2>
+            <p className="text-[var(--neu-text-secondary)]">
+              Built with modern tech stack for reliability and performance
+            </p>
           </div>
+          <BentoGrid items={statsBentoItems} />
+        </section>
+
+        {/* Main Features - Bento Grid */}
+        <section className="px-4 py-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--neu-text)] mb-2">
+              Complete HR Platform
+            </h2>
+            <p className="text-[var(--neu-text-secondary)]">
+              Everything you need to manage your workforce efficiently
+            </p>
+          </div>
+          <BentoGrid items={attendEaseBentoItems} />
+        </section>
+
+        {/* Quick Actions - Bento Grid */}
+        <section className="px-4 pb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--neu-text)] mb-2">
+              Quick Actions
+            </h2>
+            <p className="text-[var(--neu-text-secondary)]">
+              Get started with these essential features
+            </p>
+          </div>
+          <BentoGrid items={quickActionsBentoItems} />
         </section>
 
         {/* Project Details Radar Section */}
