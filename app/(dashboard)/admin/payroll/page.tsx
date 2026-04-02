@@ -121,7 +121,7 @@ export default function AdminPayrollPage() {
             ))}
           </select>
           <NeuButton onClick={handleGenerate} loading={generating} variant="accent" className="w-full sm:w-auto">
-            <DollarSign className="w-4 h-4 mr-2" />
+            <DollarSign className="w-4 h-4" />
             Generate Payroll
           </NeuButton>
         </div>

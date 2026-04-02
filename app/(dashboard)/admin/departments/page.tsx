@@ -149,7 +149,7 @@ export default function DepartmentsPage() {
           </p>
         </div>
         <NeuButton onClick={() => openModal()} variant="accent">
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="w-4 h-4" />
           Add Department
         </NeuButton>
       </div>

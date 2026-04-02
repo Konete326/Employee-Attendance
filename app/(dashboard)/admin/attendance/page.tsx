@@ -255,7 +255,7 @@ export default function AdminAttendancePage() {
         </div>
         <div className="flex gap-2">
           <NeuButton variant="ghost" onClick={() => setIsImportDialogOpen(true)}>
-            <Upload className="w-4 h-4 mr-2" />
+            <Upload className="w-4 h-4" />
             Import CSV
           </NeuButton>
         </div>

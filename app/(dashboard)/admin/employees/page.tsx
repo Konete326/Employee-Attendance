@@ -365,11 +365,11 @@ export default function EmployeeManagementPage() {
         </div>
         <div className="flex items-center gap-2">
           <NeuButton variant="ghost" onClick={handleExportEmployees}>
-            <FileSpreadsheet className="w-4 h-4 mr-2" />
+            <FileSpreadsheet className="w-4 h-4" />
             Export Excel
           </NeuButton>
           <NeuButton variant="accent" onClick={openAddDialog}>
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="w-4 h-4" />
             Add Employee
           </NeuButton>
         </div>

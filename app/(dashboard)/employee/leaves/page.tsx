@@ -144,7 +144,7 @@ export default function EmployeeLeavesPage() {
       {/* Apply Button */}
       <div className="flex justify-end">
         <NeuButton onClick={() => setShowApplyModal(true)} variant="accent">
-          <Calendar className="w-4 h-4 mr-2" />
+          <Calendar className="w-4 h-4" />
           Apply for Leave
         </NeuButton>
       </div>

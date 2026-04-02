@@ -101,11 +101,14 @@ const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
             }}
           />
 
-          {/* Text Content */}
-          <div className="relative z-20 flex items-center justify-center opacity-100 gap-2 shrink-0 px-4">
+          {/* Content Layer */}
+          <div className={cn(
+            "relative z-20 flex items-center justify-center opacity-100 gap-2 shrink-0",
+            size === "icon" ? "px-0" : "px-4"
+          )}>
             {loading && (
               <svg
-                className="animate-spin h-4 w-4 text-[var(--neu-accent)]"
+                className="animate-spin h-3.5 w-3.5 text-[var(--neu-accent)]"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -114,15 +117,15 @@ const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
             )}
-            <span
-              className="tracking-wide"
+            <div
+              className="tracking-wide flex items-center gap-2"
               style={{
                 WebkitFontSmoothing: "antialiased",
                 textShadow: "0 1px 2px rgba(0,0,0,0.5)",
               }}
             >
               {children}
-            </span>
+            </div>
           </div>
         </span>
       </Comp>
