@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Clock } from "lucide-react";
 import NeuralBackground from "@/components/ui/flow-field-background";
-import { NeuButton } from "@/components/ui/neu-button";
+import { GlowButton } from "@/components/ui/glow-button";
 import ProjectRadarSection from "@/components/home/project-radar-section";
 import ParticleIntroSection from "@/components/home/particle-intro-section";
 import { FlickeringFooter } from "@/components/ui/flickering-footer";
@@ -70,17 +70,13 @@ export default function Home() {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/login">
-                <NeuButton variant="accent" size="lg">
-                  Get Started
-                </NeuButton>
-              </Link>
-              <Link href="/register">
-                <NeuButton variant="ghost" size="lg">
-                  Register
-                </NeuButton>
-              </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-4">
+              <GlowButton asChild size="lg">
+                <Link href="/login">Get Started</Link>
+              </GlowButton>
+              <GlowButton asChild variant="ghost" size="lg">
+                <Link href="/register">Register</Link>
+              </GlowButton>
             </div>
           </div>
         </section>

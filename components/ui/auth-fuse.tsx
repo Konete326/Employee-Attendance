@@ -163,38 +163,87 @@ const Label = React.forwardRef<
 ));
 Label.displayName = LabelPrimitive.Root.displayName;
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-  {
-    variants: {
-      variant: {
-        default: "bg-[var(--neu-accent)] text-white shadow-[4px_4px_8px_var(--neu-shadow-dark),-4px_-4px-8px_var(--neu-shadow-light)] hover:shadow-[6px_6px_12px_var(--neu-shadow-dark),-6px_-6px-12px_var(--neu-shadow-light)]",
-        outline: "bg-[var(--neu-surface)] text-[var(--neu-text)] border border-[var(--neu-border)] shadow-[4px_4px_8px_var(--neu-shadow-dark),-4px_-4px-8px_var(--neu-shadow-light)] hover:shadow-[6px_6px-12px_var(--neu-shadow-dark),-6px_-6px-12px_var(--neu-shadow-light)]",
-        ghost: "text-[var(--neu-accent)] hover:text-[var(--neu-accent-hover)]",
-        link: "text-[var(--neu-accent)] hover:text-[var(--neu-accent-hover)] underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-11 px-4 py-2",
-        sm: "h-9 rounded-lg px-3",
-        lg: "h-12 rounded-xl px-6",
-        icon: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
+const Button = React.forwardRef<
+  HTMLButtonElement, 
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { 
+    asChild?: boolean; 
+    size?: "default" | "lg";
+    variant?: "default" | "link" | "outline" | "ghost";
   }
-);
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
-}
-
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+>(
+  ({ className, size, variant = "default", asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+
+    if (variant === "link") {
+      return (
+        <Comp
+          ref={ref}
+          className={cn("text-[var(--neu-accent)] hover:text-[var(--neu-accent-hover)] underline-offset-4 hover:underline", className)}
+          {...props}
+        >
+          {children}
+        </Comp>
+      );
+    }
+
+    return (
+      <Comp
+        ref={ref}
+        className={cn(
+          "group relative flex flex-col items-center justify-center decoration-0 transition-transform active:scale-95 cursor-pointer outline-none font-medium overflow-hidden",
+          size === "lg" ? "w-full h-[60px] rounded-2xl text-xl" : "w-full h-[50px] rounded-xl text-[15px]",
+          className
+        )}
+        style={{
+          backgroundColor: variant === "ghost" ? "transparent" : "rgba(255, 255, 255, 0.05)",
+        }}
+        {...props}
+      >
+        {/* Glow Layers - only for non-ghost/link buttons */}
+        {variant !== "ghost" && (
+          <>
+            <div
+              className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-100 group-hover:opacity-0"
+              style={{
+                background: "radial-gradient(15% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
+                borderRadius: "inherit",
+                filter: "blur(15px)",
+              }}
+            />
+            <div
+              className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-0 group-hover:opacity-100"
+              style={{
+                background: "radial-gradient(60.6% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
+                borderRadius: "inherit",
+                filter: "blur(18px)",
+              }}
+            />
+          </>
+        )}
+
+        {/* Fill Layer */}
+        <div
+          className="absolute inset-[1px] pointer-events-none z-10 rounded-[inherit]"
+          style={{
+            backgroundColor: variant === "ghost" ? "transparent" : "rgb(0, 0, 0)",
+            opacity: 1,
+          }}
+        />
+
+        {/* Text Content */}
+        <div className="relative z-20 flex items-center justify-center opacity-100 gap-2 shrink-0 px-4">
+          <span
+            className={cn("tracking-wide", variant === "ghost" ? "text-[var(--neu-accent)]" : "text-white")}
+            style={{
+              WebkitFontSmoothing: "antialiased",
+              textShadow: variant === "ghost" ? "none" : "0 1px 2px rgba(0,0,0,0.5)",
+            }}
+          >
+            {children}
+          </span>
+        </div>
+      </Comp>
+    );
   }
 );
 Button.displayName = "Button";

@@ -5,8 +5,8 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const neuButtonVariants = cva(
-  "group relative flex flex-col items-center justify-center decoration-0 transition-transform active:scale-95 cursor-pointer outline-none font-medium overflow-hidden shrink-0",
+const glowButtonVariants = cva(
+  "group relative flex flex-col items-center justify-center decoration-0 transition-transform active:scale-95 cursor-pointer outline-none font-medium overflow-hidden",
   {
     variants: {
       variant: {
@@ -14,49 +14,48 @@ const neuButtonVariants = cva(
         accent: "text-[var(--neu-accent)]",
         ghost: "text-[var(--neu-text-secondary)] hover:text-white",
         danger: "text-red-400",
-        outline: "text-[var(--neu-text)] border border-[var(--neu-accent)]/10 hover:border-[var(--neu-accent)]/40",
+        outline: "text-[var(--neu-text)]",
       },
       size: {
-        md: "w-[180px] h-[50px] rounded-xl text-[15px]",
+        default: "w-[180px] h-[50px] rounded-xl text-[15px]",
         sm: "w-[140px] h-[40px] rounded-lg text-sm",
         lg: "w-[220px] h-[60px] rounded-2xl text-xl",
-        icon: "w-[44px] h-[44px] rounded-xl p-0",
+        icon: "w-[44px] h-[44px] rounded-xl",
         full: "w-full h-[50px] rounded-xl text-[15px]",
       },
     },
     defaultVariants: {
       variant: "default",
-      size: "md",
+      size: "default",
     },
   }
 );
 
-export interface NeuButtonProps
+export interface GlowButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof neuButtonVariants> {
+    VariantProps<typeof glowButtonVariants> {
   asChild?: boolean;
   loading?: boolean;
 }
 
-const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
-  ({ className, variant, size, asChild = false, loading = false, children, disabled, ...props }, ref) => {
+const GlowButton = React.forwardRef<HTMLButtonElement, GlowButtonProps>(
+  ({ className, variant, size, asChild = false, loading = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
 
     return (
       <Comp
         ref={ref}
-        className={cn(neuButtonVariants({ variant, size, className }), (loading || disabled) && "opacity-80 pointer-events-none grayscale-[0.2]")}
+        className={cn(glowButtonVariants({ variant, size, className }), loading && "opacity-80 pointer-events-none")}
         style={{
           backgroundColor: "rgba(255, 255, 255, 0.05)",
         }}
-        disabled={disabled || loading}
         {...props}
       >
         {/* Glow Layer */}
         <div
           className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-100 group-hover:opacity-0"
           style={{
-            background: "radial-gradient(15% 50% at 50% 100%, rgb(129, 140, 248) 0%, rgba(129, 140, 248, 0) 100%)",
+            background: "radial-gradient(15% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
             borderRadius: "inherit",
             filter: "blur(15px)",
           }}
@@ -66,7 +65,7 @@ const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
         <div
           className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-0 group-hover:opacity-100"
           style={{
-            background: "radial-gradient(60.6% 50% at 50% 100%, rgb(129, 140, 248) 0%, rgba(129, 140, 248, 0) 100%)",
+            background: "radial-gradient(60.6% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
             borderRadius: "inherit",
             filter: "blur(18px)",
           }}
@@ -76,7 +75,7 @@ const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
         <div
           className="absolute inset-0 pointer-events-none will-change-auto transition-opacity ease-in-out duration-[1200ms] opacity-100 group-hover:opacity-0"
           style={{
-            background: "radial-gradient(10.7% 50% at 50% 100%, rgb(129, 140, 248) 0%, rgba(129, 140, 248, 0) 100%)",
+            background: "radial-gradient(10.7% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
             borderRadius: "inherit",
           }}
         />
@@ -85,7 +84,7 @@ const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
         <div
           className="absolute inset-0 pointer-events-none will-change-auto transition-opacity ease-in-out duration-[1200ms] opacity-0 group-hover:opacity-100"
           style={{
-            background: "radial-gradient(60.1% 50% at 50% 100%, rgb(129, 140, 248) 0%, rgba(129, 140, 248, 0) 100%)",
+            background: "radial-gradient(60.1% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
             borderRadius: "inherit",
           }}
         />
@@ -104,7 +103,7 @@ const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
         <div className="relative z-20 flex items-center justify-center opacity-100 gap-2 shrink-0 px-4">
           {loading && (
             <svg
-              className="animate-spin h-4 w-4 text-[var(--neu-accent)]"
+              className="animate-spin h-4 w-4"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -128,6 +127,6 @@ const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
   }
 );
 
-NeuButton.displayName = "NeuButton";
+GlowButton.displayName = "GlowButton";
 
-export { NeuButton };
+export { GlowButton };
