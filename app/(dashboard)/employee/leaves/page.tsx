@@ -115,7 +115,7 @@ export default function EmployeeLeavesPage() {
   return (
     <div className="space-y-6">
       {/* Leave Balance Cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <NeuCard>
           <NeuCardContent className="p-4 text-center">
             <p className="text-sm text-[var(--neu-text-secondary)]">Annual Leave</p>
@@ -158,7 +158,7 @@ export default function EmployeeLeavesPage() {
               description="You haven't applied for any leave yet."
             />
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto -mx-2 px-2">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-[var(--neu-border)]">

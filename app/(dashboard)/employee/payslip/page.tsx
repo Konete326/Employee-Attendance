@@ -69,13 +69,13 @@ export default function EmployeePayslipPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-bold">My Payslip</h2>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3">
           <select
             value={month}
             onChange={(e) => setMonth(parseInt(e.target.value))}
-            className="px-3 py-2 rounded-lg bg-[var(--neu-surface)] border border-[var(--neu-border)]"
+            className="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-[var(--neu-surface)] border border-[var(--neu-border)] text-sm"
           >
             {Array.from({ length: 12 }, (_, i) => (
               <option key={i + 1} value={i + 1}>
@@ -86,7 +86,7 @@ export default function EmployeePayslipPage() {
           <select
             value={year}
             onChange={(e) => setYear(parseInt(e.target.value))}
-            className="px-3 py-2 rounded-lg bg-[var(--neu-surface)] border border-[var(--neu-border)]"
+            className="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-[var(--neu-surface)] border border-[var(--neu-border)] text-sm"
           >
             {[2024, 2025, 2026].map((y) => (
               <option key={y} value={y}>{y}</option>
@@ -106,16 +106,16 @@ export default function EmployeePayslipPage() {
           <NeuCardContent className="p-8">
             {/* Header */}
             <div className="border-b border-[var(--neu-border)] pb-6 mb-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-bold text-[var(--neu-accent)]">AttendEase</h3>
-                  <p className="text-sm text-[var(--neu-text-secondary)]">Employee Payslip</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium">{user?.name}</p>
-                  <p className="text-sm text-[var(--neu-text-secondary)]">ID: {user?.employeeId || "N/A"}</p>
-                </div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 className="text-xl font-bold text-[var(--neu-accent)]">AttendEase</h3>
+                <p className="text-sm text-[var(--neu-text-secondary)]">Employee Payslip</p>
               </div>
+              <div className="sm:text-right">
+                <p className="font-medium">{user?.name}</p>
+                <p className="text-sm text-[var(--neu-text-secondary)]">ID: {user?.employeeId || "N/A"}</p>
+              </div>
+            </div>
               <div className="mt-4">
                 <p className="text-lg font-semibold">
                   {new Date(year, month - 1).toLocaleString("en-US", { month: "long" })} {year}

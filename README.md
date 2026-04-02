@@ -26,6 +26,21 @@
 
 ---
 
+## 🔑 Demo Credentials
+
+> Try the live demo instantly — no signup required!
+
+| Role | Email | Password |
+|------|-------|----------|
+| 👨‍💼 **Admin** | `admin@attendance.com` | `admin123` |
+| 👨‍💻 **Employee** | *(Register via `/register`)* | — |
+
+> **Note:** The first registered user is automatically promoted to **Admin**. All subsequent registrations become **employees**.
+
+---
+
+---
+
 ## What This Actually Does
 
 Ye system basically ek chhoti company (10-50 employees) ke liye complete HR tool hai. Daily attendance mark karna, leave apply karna, salary calculate karna, aur management ko reports milna — sab kuch ek jagah.

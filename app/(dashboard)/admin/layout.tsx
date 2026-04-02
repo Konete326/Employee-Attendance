@@ -17,12 +17,13 @@ export default function AdminLayout({
       <AdminSidebar />
       <div 
         className={cn(
-          "flex-1 transition-all duration-300",
+          "flex-1 transition-all duration-300 min-w-0",
+          "ml-0",
           isCollapsed ? "lg:ml-20" : "lg:ml-64"
         )}
       >
         <Header />
-        <main className="p-6">
+        <main className="p-3 sm:p-4 md:p-6">
           {children}
         </main>
       </div>
