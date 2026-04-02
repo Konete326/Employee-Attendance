@@ -356,19 +356,27 @@ export default function EmployeeManagementPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="flex items-center gap-3">
-          <Users className="w-8 h-8 text-[var(--neu-accent)]" />
-          <h1 className="text-2xl font-bold text-[var(--neu-text)]">
+          <Users className="w-6 h-6 md:w-8 md:h-8 text-[var(--neu-accent)]" />
+          <h1 className="text-xl md:text-2xl font-bold text-[var(--neu-text)]">
             Employee Management
           </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <NeuButton variant="ghost" onClick={handleExportEmployees}>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <NeuButton
+            variant="ghost"
+            onClick={handleExportEmployees}
+            className="flex-1 sm:flex-none h-11"
+          >
             <FileSpreadsheet className="w-4 h-4" />
             Export Excel
           </NeuButton>
-          <NeuButton variant="accent" onClick={openAddDialog}>
+          <NeuButton
+            variant="accent"
+            onClick={openAddDialog}
+            className="flex-1 sm:flex-none h-11 shadow-[0_0_20px_-5px_var(--neu-accent)]"
+          >
             <Plus className="w-4 h-4" />
             Add Employee
           </NeuButton>

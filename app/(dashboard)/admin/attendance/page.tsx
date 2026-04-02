@@ -243,18 +243,18 @@ export default function AdminAttendancePage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--neu-text)] flex items-center gap-3">
-            <ClipboardCheck className="w-8 h-8 text-[var(--neu-accent)]" />
-            Attendance Management
+          <h1 className="text-2xl md:text-3xl font-bold text-[var(--neu-text)] flex items-center gap-3">
+            <ClipboardCheck className="w-6 h-6 md:w-8 md:h-8 text-[var(--neu-accent)]" />
+            Attendance
           </h1>
-          <p className="text-[var(--neu-text-secondary)] mt-1">
-            View and manage employee attendance records
+          <p className="text-xs md:text-sm text-[var(--neu-text-secondary)] mt-1">
+            Manage employee attendance records
           </p>
         </div>
-        <div className="flex gap-2">
-          <NeuButton variant="ghost" onClick={() => setIsImportDialogOpen(true)}>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <NeuButton variant="ghost" onClick={() => setIsImportDialogOpen(true)} className="flex-1 sm:flex-none">
             <Upload className="w-4 h-4" />
             Import CSV
           </NeuButton>
@@ -263,7 +263,7 @@ export default function AdminAttendancePage() {
 
       {/* Today's Summary */}
       {summary && (
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           <NeuCard>
             <NeuCardContent className="p-4">
               <p className="text-sm text-[var(--neu-text-secondary)]">Total Employees</p>

@@ -223,14 +223,15 @@ export function AttendanceExport({ records, month, year, dept }: AttendanceExpor
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
       <NeuButton
         variant="ghost"
         size="sm"
         onClick={handleExportCSV}
         disabled={records.length === 0}
+        className="flex-1 sm:flex-none h-9"
       >
-        <Download className="w-4 h-4 mr-2" />
+        <Download className="w-4 h-4" />
         CSV
       </NeuButton>
 
@@ -239,25 +240,27 @@ export function AttendanceExport({ records, month, year, dept }: AttendanceExpor
         size="sm"
         onClick={handleExportExcel}
         disabled={isExportingExcel || records.length === 0}
+        className="flex-1 sm:flex-none h-9"
       >
         {isExportingExcel ? (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
-          <FileSpreadsheet className="w-4 h-4 mr-2" />
+          <FileSpreadsheet className="w-4 h-4" />
         )}
         Excel
       </NeuButton>
 
       <NeuButton
-        variant="default"
+        variant="accent"
         size="sm"
         onClick={handleExportPDF}
         disabled={isExportingPDF || records.length === 0}
+        className="flex-1 sm:flex-none h-9 shadow-[0_0_15px_-5px_var(--neu-accent)]"
       >
         {isExportingPDF ? (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
-          <FileText className="w-4 h-4 mr-2" />
+          <FileText className="w-4 h-4" />
         )}
         PDF
       </NeuButton>
