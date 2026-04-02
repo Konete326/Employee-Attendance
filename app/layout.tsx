@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   title: "AttendEase — Employee Attendance System",
   description:
     "Role-based employee attendance tracking system with check-in/check-out, admin dashboard, and detailed reports.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
