@@ -98,63 +98,53 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       rows: number,
       squares: Float32Array,
       dpr: number,
+      maskData?: Uint8Array, // Pre-calculated mask data
     ) => {
       ctx.clearRect(0, 0, width, height);
 
-      const maskCanvas = document.createElement("canvas");
-      maskCanvas.width = width;
-      maskCanvas.height = height;
-      const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true });
-      if (!maskCtx) return;
-
-      if (text) {
-        maskCtx.save();
-        maskCtx.scale(dpr, dpr);
-        maskCtx.fillStyle = "white";
-        maskCtx.font = `${fontWeight} ${fontSize}px sans-serif`;
-        maskCtx.textAlign = "center";
-        maskCtx.textBaseline = "middle";
-        maskCtx.fillText(text, width / (2 * dpr), height / (2 * dpr));
-        maskCtx.restore();
-      }
+      const gridStep = (squareSize + gridGap) * dpr;
+      const sWidth = squareSize * dpr;
+      const sHeight = squareSize * dpr;
 
       for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-          const x = i * (squareSize + gridGap) * dpr;
-          const y = j * (squareSize + gridGap) * dpr;
-          const squareWidth = squareSize * dpr;
-          const squareHeight = squareSize * dpr;
+          const x = i * gridStep;
+          const y = j * gridStep;
 
-          const maskData = maskCtx.getImageData(
-            x,
-            y,
-            squareWidth,
-            squareHeight,
-          ).data;
-          const hasText = maskData.some(
-            (value, index) => index % 4 === 0 && value > 0,
-          );
+          let hasText = false;
+          if (maskData) {
+            // Sample the center of the square in the mask data
+            const centerX = Math.floor(x + sWidth / 2);
+            const centerY = Math.floor(y + sHeight / 2);
+            const pixelIndex = (centerY * width + centerX) * 4;
+            if (pixelIndex >= 0 && pixelIndex < maskData.length) {
+              hasText = maskData[pixelIndex + 3] > 128; // Check alpha channel
+            }
+          }
 
           const opacity = squares[i * rows + j];
           const finalOpacity = hasText
-            ? Math.min(1, opacity * 3 + 0.4)
+            ? Math.min(1, opacity * 3 + 0.45)
             : opacity;
 
-          ctx.fillStyle = colorWithOpacity(memoizedColor, finalOpacity);
-          ctx.fillRect(x, y, squareWidth, squareHeight);
+          ctx.fillStyle = `rgba(${memoizedColor.match(/\d+/g)?.slice(0, 3).join(",")}, ${finalOpacity})`;
+          ctx.fillRect(x, y, sWidth, sHeight);
         }
       }
     },
-    [memoizedColor, squareSize, gridGap, text, fontSize, fontWeight],
+    [memoizedColor, squareSize, gridGap],
   );
 
   const setupCanvas = useCallback(
     (canvas: HTMLCanvasElement, width: number, height: number) => {
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      const canvasWidth = width * dpr;
+      const canvasHeight = height * dpr;
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
+
       const cols = Math.ceil(width / (squareSize + gridGap));
       const rows = Math.ceil(height / (squareSize + gridGap));
 
@@ -163,9 +153,28 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         squares[i] = Math.random() * maxOpacity;
       }
 
-      return { cols, rows, squares, dpr };
+      // Create mask data once
+      let maskData: Uint8Array | undefined;
+      const maskCanvas = document.createElement("canvas");
+      maskCanvas.width = canvasWidth;
+      maskCanvas.height = canvasHeight;
+      const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true });
+
+      if (maskCtx && text) {
+        maskCtx.save();
+        maskCtx.scale(dpr, dpr);
+        maskCtx.fillStyle = "white";
+        maskCtx.font = `${fontWeight} ${fontSize}px sans-serif`;
+        maskCtx.textAlign = "center";
+        maskCtx.textBaseline = "middle";
+        maskCtx.fillText(text, width / 2, height / 2);
+        maskCtx.restore();
+        maskData = new Uint8Array(maskCtx.getImageData(0, 0, canvasWidth, canvasHeight).data.buffer);
+      }
+
+      return { cols, rows, squares, dpr, maskData };
     },
-    [squareSize, gridGap, maxOpacity],
+    [squareSize, gridGap, maxOpacity, text, fontSize, fontWeight],
   );
 
   const updateSquares = useCallback(
@@ -200,24 +209,25 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
     updateCanvasSize();
 
     let lastTime = 0;
-    const animate = (time: number) => {
-      if (!isInView) return;
+      const animate = (time: number) => {
+        if (!isInView) return;
 
-      const deltaTime = (time - lastTime) / 1000;
-      lastTime = time;
+        const deltaTime = (time - lastTime) / 1000;
+        lastTime = time;
 
-      updateSquares(gridParams.squares, deltaTime);
-      drawGrid(
-        ctx,
-        canvas.width,
-        canvas.height,
-        gridParams.cols,
-        gridParams.rows,
-        gridParams.squares,
-        gridParams.dpr,
-      );
-      animationFrameId = requestAnimationFrame(animate);
-    };
+        updateSquares(gridParams.squares, deltaTime);
+        drawGrid(
+          ctx,
+          canvas.width,
+          canvas.height,
+          gridParams.cols,
+          gridParams.rows,
+          gridParams.squares,
+          gridParams.dpr,
+          gridParams.maskData,
+        );
+        animationFrameId = requestAnimationFrame(animate);
+      };
 
     const resizeObserver = new ResizeObserver(() => {
       updateCanvasSize();
