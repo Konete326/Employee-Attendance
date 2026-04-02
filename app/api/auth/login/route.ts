@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Sign JWT token
-    const token = generateToken(user._id.toString(), user.role);
+    const token = generateToken(user._id.toString(), user.email, user.role);
 
     // Set HTTP-only cookie
     const cookieStore = await cookies();

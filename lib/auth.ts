@@ -30,11 +30,11 @@ export async function comparePassword(
 /**
  * Generate a JWT token with 7 days expiry
  */
-export function generateToken(userId: string, role: string): string {
-  const payload: JWTPayload = { userId, email: "", role: role as JWTPayload["role"] };
+export function generateToken(userId: string, email: string, role: string): string {
+  const payload: JWTPayload = { userId, email, role: role as JWTPayload["role"] };
   const expiresIn = (process.env.JWT_EXPIRES_IN || "7d") as SignOptions["expiresIn"];
   const options: SignOptions = { expiresIn };
-  return jwt.sign({ userId, role }, JWT_SECRET!, options);
+  return jwt.sign(payload, JWT_SECRET!, options);
 }
 
 /**
