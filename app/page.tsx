@@ -8,6 +8,7 @@ import { NeuButton } from "@/components/ui/neu-button";
 import { NeuCard, NeuCardContent } from "@/components/ui/neu-card";
 import ProjectRadarSection from "@/components/home/project-radar-section";
 import ParticleIntroSection from "@/components/home/particle-intro-section";
+import { FlickeringFooter } from "@/components/ui/flickering-footer";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -138,11 +139,7 @@ export default function Home() {
         <ProjectRadarSection />
 
         {/* Footer */}
-        <footer className="relative z-10 py-6 text-center">
-          <p className="text-sm text-[var(--neu-text-muted)]">
-            © 2026 AttendEase
-          </p>
-        </footer>
+        <FlickeringFooter />
       </main>
     </div>
   );
