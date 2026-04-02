@@ -16,6 +16,8 @@ import {
   NeuTableCell,
 } from "@/components/ui/neu-table";
 import { EmptyState } from "@/components/ui/empty-state";
+import { List2, ListItem } from "@/components/ui/list-2";
+import { User as UserIcon, Calendar as CalendarIcon, Activity, Eye } from "lucide-react";
 
 interface AuditLog {
   _id: string;
@@ -268,108 +270,67 @@ export default function AdminAuditLogsPage() {
             />
           ) : (
             <>
-              <div className="overflow-x-auto">
-                <NeuTable>
-                  <NeuTableHeader>
-                    <NeuTableRow>
-                      <NeuTableHead>Timestamp</NeuTableHead>
-                      <NeuTableHead>Admin</NeuTableHead>
-                      <NeuTableHead>Action</NeuTableHead>
-                      <NeuTableHead>Target</NeuTableHead>
-                      <NeuTableHead>Details</NeuTableHead>
-                    </NeuTableRow>
-                  </NeuTableHeader>
-                  <NeuTableBody>
-                    {logs.map((log) => (
-                      <>
-                        <NeuTableRow
-                          key={log._id}
-                          className="cursor-pointer hover:bg-[var(--neu-bg)]"
-                          onClick={() => toggleRowExpansion(log._id)}
+              <List2 
+                items={logs.map((log) => ({
+                  icon: <Activity className="w-5 h-5 text-[var(--neu-accent)]" />,
+                  title: log.performedBy?.name || "Unknown Admin",
+                  category: log.action,
+                  description: (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2 opacity-80">
+                        <CalendarIcon className="w-4 h-4" />
+                        <span>{formatDate(log.timestamp)}</span>
+                      </div>
+                      <div className="text-sm opacity-60">
+                        Target: {log.targetModel} ({log.targetId.slice(-6)})
+                      </div>
+                    </div>
+                  ),
+                  status: (
+                    <div className="flex items-center gap-3">
+                      <NeuBadge variant={getActionBadgeVariant(log.action)}>
+                        {log.action}
+                      </NeuBadge>
+                    </div>
+                  ),
+                  onClick: () => toggleRowExpansion(log._id),
+                  children: expandedRow === log._id && (log.oldValues || log.newValues) ? (
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-[var(--neu-text)] text-sm">Action Details & Changes</h4>
+                      {formatChanges(log.oldValues, log.newValues)?.map((change, idx) => (
+                        <div
+                          key={idx}
+                          className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3 bg-white/5 rounded-lg border border-white/5"
                         >
-                          <NeuTableCell className="whitespace-nowrap">
-                            {formatDate(log.timestamp)}
-                          </NeuTableCell>
-                          <NeuTableCell>
-                            <div>
-                              <p className="font-medium">{log.performedBy?.name || "Unknown"}</p>
-                              <p className="text-sm text-[var(--neu-text-secondary)]">
-                                {log.performedBy?.email}
-                              </p>
-                            </div>
-                          </NeuTableCell>
-                          <NeuTableCell>
-                            <NeuBadge variant={getActionBadgeVariant(log.action)}>
-                              {log.action}
-                            </NeuBadge>
-                          </NeuTableCell>
-                          <NeuTableCell>
-                            <div>
-                              <p className="font-medium">{log.targetModel}</p>
-                              <p className="text-sm text-[var(--neu-text-secondary)] truncate max-w-[150px]">
-                                {log.targetId}
-                              </p>
-                            </div>
-                          </NeuTableCell>
-                          <NeuTableCell>
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm text-[var(--neu-text-secondary)]">
-                                {(log.oldValues || log.newValues) ? "View changes" : "No details"}
-                              </span>
-                              {(log.oldValues || log.newValues) && (
-                                expandedRow === log._id ? (
-                                  <ChevronUp className="w-4 h-4" />
-                                ) : (
-                                  <ChevronDown className="w-4 h-4" />
-                                )
-                              )}
-                            </div>
-                          </NeuTableCell>
-                        </NeuTableRow>
-                        {expandedRow === log._id && (log.oldValues || log.newValues) && (
-                          <NeuTableRow>
-                            <NeuTableCell colSpan={5} className="bg-[var(--neu-bg)]">
-                              <div className="p-4 space-y-3">
-                                <h4 className="font-medium text-[var(--neu-text)]">Changes</h4>
-                                {formatChanges(log.oldValues, log.newValues)?.map((change, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="grid grid-cols-3 gap-4 p-3 bg-[var(--neu-surface)] rounded-lg"
-                                  >
-                                    <div>
-                                      <span className="text-sm font-medium text-[var(--neu-text-secondary)]">
-                                        Field:
-                                      </span>
-                                      <p className="font-medium">{change.field}</p>
-                                    </div>
-                                    <div>
-                                      <span className="text-sm font-medium text-red-500">
-                                        Old Value:
-                                      </span>
-                                      <p className="font-mono text-sm">{change.old}</p>
-                                    </div>
-                                    <div>
-                                      <span className="text-sm font-medium text-green-500">
-                                        New Value:
-                                      </span>
-                                      <p className="font-mono text-sm">{change.new}</p>
-                                    </div>
-                                  </div>
-                                ))}
-                                {log.ipAddress && (
-                                  <p className="text-sm text-[var(--neu-text-secondary)]">
-                                    IP Address: {log.ipAddress}
-                                  </p>
-                                )}
-                              </div>
-                            </NeuTableCell>
-                          </NeuTableRow>
-                        )}
-                      </>
-                    ))}
-                  </NeuTableBody>
-                </NeuTable>
-              </div>
+                          <div>
+                            <span className="text-[10px] font-bold text-[var(--neu-text-secondary)] uppercase tracking-wider">
+                              Field
+                            </span>
+                            <p className="font-medium text-sm text-[var(--neu-accent)]">{change.field}</p>
+                          </div>
+                          <div className="bg-red-500/5 p-2 rounded">
+                            <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider">
+                              Old
+                            </span>
+                            <p className="font-mono text-xs opacity-70 break-all">{change.old}</p>
+                          </div>
+                          <div className="bg-green-500/5 p-2 rounded">
+                            <span className="text-[10px] font-bold text-green-400 uppercase tracking-wider">
+                              New
+                            </span>
+                            <p className="font-mono text-xs opacity-70 break-all">{change.new}</p>
+                          </div>
+                        </div>
+                      ))}
+                      {log.ipAddress && (
+                        <p className="text-[10px] text-[var(--neu-text-secondary)] uppercase font-bold text-right pt-2 border-t border-white/5">
+                          IP: {log.ipAddress} • ID: {log._id}
+                        </p>
+                      )}
+                    </div>
+                  ) : null
+                }))}
+              />
 
               {/* Pagination */}
               {pagination && pagination.totalPages > 1 && (

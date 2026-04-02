@@ -14,6 +14,8 @@ import {
   NeuTableHead,
   NeuTableCell,
 } from "@/components/ui/neu-table";
+import { EmptyState } from "@/components/ui/empty-state";
+import { List2, ListItem } from "@/components/ui/list-2";
 import { IDepartment } from "@/types";
 
 interface DepartmentFormData {
@@ -181,50 +183,33 @@ export default function DepartmentsPage() {
               <p className="text-sm mt-1">Click &quot;Add Department&quot; to create one</p>
             </div>
           ) : (
-            <NeuTable>
-              <NeuTableHeader>
-                <NeuTableRow>
-                  <NeuTableHead>Name</NeuTableHead>
-                  <NeuTableHead>Description</NeuTableHead>
-                  <NeuTableHead>Status</NeuTableHead>
-                  <NeuTableHead className="text-right">Actions</NeuTableHead>
-                </NeuTableRow>
-              </NeuTableHeader>
-              <NeuTableBody>
-                {departments.map((dept) => (
-                  <NeuTableRow key={dept._id.toString()}>
-                    <NeuTableCell className="font-medium">{dept.name}</NeuTableCell>
-                    <NeuTableCell className="text-[var(--neu-text-secondary)]">
-                      {dept.description || "-"}
-                    </NeuTableCell>
-                    <NeuTableCell>
-                      <NeuBadge variant={dept.isActive ? ("success" as const) : ("default" as const)}>
-                        {dept.isActive ? "Active" : "Inactive"}
-                      </NeuBadge>
-                    </NeuTableCell>
-                    <NeuTableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <NeuButton
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => openModal(dept)}
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </NeuButton>
-                        <NeuButton
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => handleDelete(dept._id.toString())}
-                          className="text-[var(--neu-danger)]"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </NeuButton>
-                      </div>
-                    </NeuTableCell>
-                  </NeuTableRow>
-                ))}
-              </NeuTableBody>
-            </NeuTable>
+            <List2 
+              items={departments.map((dept) => ({
+                icon: <Building2 className="w-5 h-5 text-[var(--neu-accent)]" />,
+                title: dept.name,
+                category: "DEPARTMENT",
+                description: dept.description || "No description provided.",
+                onClick: () => openModal(dept),
+                status: (
+                  <div className="flex items-center gap-3">
+                    <NeuBadge variant={dept.isActive ? ("success" as const) : ("default" as const)}>
+                      {dept.isActive ? "Active" : "Inactive"}
+                    </NeuBadge>
+                    <NeuButton
+                      size="icon"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(dept._id.toString());
+                      }}
+                      className="text-[var(--neu-danger)] hover:bg-[var(--neu-danger)]/10 h-8 w-8"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </NeuButton>
+                  </div>
+                )
+              }))}
+            />
           )}
         </NeuCardContent>
       </NeuCard>

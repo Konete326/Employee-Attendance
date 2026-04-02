@@ -16,6 +16,8 @@ import { NeuInput } from "@/components/ui/neu-input";
 import { NeuSelect } from "@/components/ui/neu-select";
 import { NeuDialog } from "@/components/ui/neu-dialog";
 import { NeuBadge } from "@/components/ui/neu-badge";
+import { List2, ListItem } from "@/components/ui/list-2";
+import { User as UserIcon } from "lucide-react";
 
 interface Employee {
   _id: string;
@@ -397,55 +399,33 @@ export default function EmployeeManagementPage() {
               </p>
             </div>
           ) : (
-            <NeuTable>
-              <NeuTableHeader>
-                <NeuTableRow>
-                  <NeuTableHead>Name</NeuTableHead>
-                  <NeuTableHead>Email</NeuTableHead>
-                  <NeuTableHead>Department</NeuTableHead>
-                  <NeuTableHead>Role</NeuTableHead>
-                  <NeuTableHead className="text-right">Actions</NeuTableHead>
-                </NeuTableRow>
-              </NeuTableHeader>
-              <NeuTableBody>
-                {filteredEmployees.map((employee) => (
-                  <NeuTableRow key={employee._id}>
-                    <NeuTableCell className="font-medium text-[var(--neu-text)]">
-                      {employee.name}
-                    </NeuTableCell>
-                    <NeuTableCell>{employee.email}</NeuTableCell>
-                    <NeuTableCell>
-                      {employee.department?.name || "—"}
-                    </NeuTableCell>
-                    <NeuTableCell>
-                      <NeuBadge variant={getRoleBadgeVariant(employee.role)}>
-                        {employee.role.charAt(0).toUpperCase() + employee.role.slice(1)}
-                      </NeuBadge>
-                    </NeuTableCell>
-                    <NeuTableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <NeuButton
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openEditDialog(employee)}
-                          aria-label={`Edit ${employee.name}`}
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </NeuButton>
-                        <NeuButton
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openDeleteDialog(employee)}
-                          aria-label={`Delete ${employee.name}`}
-                        >
-                          <Trash2 className="w-4 h-4 text-[var(--neu-danger)]" />
-                        </NeuButton>
-                      </div>
-                    </NeuTableCell>
-                  </NeuTableRow>
-                ))}
-              </NeuTableBody>
-            </NeuTable>
+            <List2 
+              items={filteredEmployees.map((employee) => ({
+                icon: <UserIcon className="w-5 h-5" />,
+                title: employee.name,
+                category: employee.role.toUpperCase(),
+                description: `${employee.department?.name || 'No Dept'} • ${employee.email}`,
+                onClick: () => openEditDialog(employee),
+                status: (
+                  <div className="flex items-center gap-2">
+                    <NeuBadge variant={getRoleBadgeVariant(employee.role)}>
+                      {employee.role}
+                    </NeuBadge>
+                    <NeuButton
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openDeleteDialog(employee);
+                      }}
+                      className="h-8 w-8 text-[var(--neu-danger)] hover:bg-[var(--neu-danger)]/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </NeuButton>
+                  </div>
+                )
+              }))}
+            />
           )}
         </NeuCardContent>
       </NeuCard>

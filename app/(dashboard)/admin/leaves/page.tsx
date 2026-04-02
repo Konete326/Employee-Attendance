@@ -8,6 +8,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { CheckCircle, XCircle, Calendar } from "lucide-react";
 import { useToast } from "@/components/ui/neu-toast";
 import { ChipLoader } from "@/components/ui/chip-loader";
+import { List2, ListItem } from "@/components/ui/list-2";
+import { User as UserIcon, Calendar as CalendarIcon } from "lucide-react";
 
 interface LeaveRequest {
   _id: string;
@@ -145,59 +147,52 @@ export default function AdminLeavesPage() {
               description={`No ${filter !== "all" ? filter : ""} leave requests found.`}
             />
           ) : (
-            <div className="overflow-x-auto -mx-2 px-2">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-[var(--neu-border)]">
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Employee</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Type</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Dates</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Days</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Status</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaves.map((leave) => (
-                    <tr key={leave._id} className="border-b border-[var(--neu-border)] last:border-0">
-                      <td className="py-4 px-4">
-                        <p className="font-medium">{leave.userId?.name}</p>
-                      </td>
-                      <td className="py-4 px-4 capitalize">{leave.leaveType}</td>
-                      <td className="py-4 px-4">
-                        {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
-                      </td>
-                      <td className="py-4 px-4">{leave.totalDays}</td>
-                      <td className="py-4 px-4">{getStatusBadge(leave.status)}</td>
-                      <td className="py-4 px-4">
-                        {leave.status === "pending" && (
-                          <div className="flex gap-2">
-                            <NeuButton
-                              size="sm"
-                              variant="accent"
-                              onClick={() => handleApprove(leave._id)}
-                              loading={actionLoading === leave._id}
-                            >
-                              <CheckCircle className="w-4 h-4 mr-1" />
-                              Approve
-                            </NeuButton>
-                            <NeuButton
-                              size="sm"
-                              variant="danger"
-                              onClick={() => handleReject(leave._id)}
-                              loading={actionLoading === leave._id}
-                            >
-                              <XCircle className="w-4 h-4 mr-1" />
-                              Reject
-                            </NeuButton>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <List2 
+              items={leaves.map((leave) => ({
+                icon: <UserIcon className="w-5 h-5" />,
+                title: leave.userId?.name || "Unknown Employee",
+                category: leave.leaveType.toUpperCase(),
+                description: (
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 opacity-80">
+                      <CalendarIcon className="w-4 h-4" />
+                      <span>{new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}</span>
+                      <span className="font-bold text-[var(--neu-accent)]">({leave.totalDays} Days)</span>
+                    </div>
+                    <div className="text-sm italic opacity-60 line-clamp-1">
+                      "{leave.reason}"
+                    </div>
+                  </div>
+                ),
+                status: (
+                  <div className="flex items-center gap-2">
+                    {getStatusBadge(leave.status)}
+                    {leave.status === "pending" && (
+                      <div className="flex gap-1 ml-2">
+                        <NeuButton
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => handleApprove(leave._id)}
+                          disabled={!!actionLoading}
+                          className="h-8 w-8 text-[var(--neu-success)] hover:bg-[var(--neu-success)]/10"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                        </NeuButton>
+                        <NeuButton
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => handleReject(leave._id)}
+                          disabled={!!actionLoading}
+                          className="h-8 w-8 text-[var(--neu-danger)] hover:bg-[var(--neu-danger)]/10"
+                        >
+                          <XCircle className="w-4 h-4" />
+                        </NeuButton>
+                      </div>
+                    )}
+                  </div>
+                )
+              }))}
+            />
           )}
         </NeuCardContent>
       </NeuCard>

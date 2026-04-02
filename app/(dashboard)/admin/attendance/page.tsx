@@ -16,6 +16,8 @@ import {
   NeuTableCell,
 } from "@/components/ui/neu-table";
 import { NeuDialog } from "@/components/ui/neu-dialog";
+import { List2, ListItem } from "@/components/ui/list-2";
+import { User as UserIcon, MapPin, Clock } from "lucide-react";
 
 interface AttendanceRecord {
   _id: string;
@@ -348,70 +350,42 @@ export default function AdminAttendancePage() {
               <p>No attendance records found</p>
             </div>
           ) : (
-            <NeuTable>
-              <NeuTableHeader>
-                <NeuTableRow>
-                  <NeuTableHead>Employee</NeuTableHead>
-                  <NeuTableHead>Date</NeuTableHead>
-                  <NeuTableHead>Check In</NeuTableHead>
-                  <NeuTableHead>Check Out</NeuTableHead>
-                  <NeuTableHead>Hours</NeuTableHead>
-                <NeuTableHead>Location</NeuTableHead>
-                  <NeuTableHead>Status</NeuTableHead>
-                  <NeuTableHead className="text-right">Actions</NeuTableHead>
-                </NeuTableRow>
-              </NeuTableHeader>
-              <NeuTableBody>
-                {filteredRecords.map((record) => (
-                  <NeuTableRow key={record._id}>
-                    <NeuTableCell>
-                      <div className="font-medium">{record.userId.name}</div>
-                      <div className="text-sm text-[var(--neu-text-secondary)]">
-                        {record.userId.employeeId}
-                      </div>
-                    </NeuTableCell>
-                    <NeuTableCell>{record.date}</NeuTableCell>
-                    <NeuTableCell>
-                      {record.checkIn
-                        ? new Date(record.checkIn).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
-                        : "-"}
-                    </NeuTableCell>
-                    <NeuTableCell>
-                      {record.checkOut
-                        ? new Date(record.checkOut).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
-                        : "-"}
-                    </NeuTableCell>
-                    <NeuTableCell>{record.hoursWorked?.toFixed(1) || "-"}</NeuTableCell>
-                    <NeuTableCell>{getLocationBadge(record)}</NeuTableCell>
-                    <NeuTableCell>
-                      <NeuBadge variant={getStatusBadgeVariant(record.status)}>
-                        {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-                      </NeuBadge>
-                      {record.overriddenBy && (
-                        <div className="text-xs text-[var(--neu-text-secondary)] mt-1">
-                          Overridden by {record.overriddenBy.name}
-                        </div>
-                      )}
-                    </NeuTableCell>
-                    <NeuTableCell className="text-right">
-                      <NeuButton
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => openOverrideDialog(record)}
-                      >
-                        Override
-                      </NeuButton>
-                    </NeuTableCell>
-                  </NeuTableRow>
-                ))}
-              </NeuTableBody>
-            </NeuTable>
+            <List2 
+              items={filteredRecords.map((record) => ({
+                icon: <UserIcon className="w-5 h-5" />,
+                title: record.userId.name,
+                category: record.userId.employeeId || "No ID",
+                description: (
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1 opacity-70">
+                        <Clock className="w-3.5 h-3.5" />
+                        {record.checkIn ? new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "-"}
+                      </span>
+                      <span>→</span>
+                      <span className="flex items-center gap-1 opacity-70">
+                        {record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "-"}
+                      </span>
+                      <span className="ml-2 font-bold text-[var(--neu-accent)]">
+                        {record.hoursWorked?.toFixed(1) || "0"}h
+                      </span>
+                    </div>
+                    <div className="text-sm font-medium opacity-60">
+                      {record.date}
+                    </div>
+                  </div>
+                ),
+                status: (
+                  <div className="flex items-center gap-3">
+                    {getLocationBadge(record)}
+                    <NeuBadge variant={getStatusBadgeVariant(record.status)}>
+                      {record.status}
+                    </NeuBadge>
+                  </div>
+                ),
+                onClick: () => openOverrideDialog(record)
+              }))}
+            />
           )}
         </NeuCardContent>
       </NeuCard>

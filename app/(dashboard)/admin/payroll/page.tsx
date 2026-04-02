@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { NeuCard, NeuCardContent } from "@/components/ui/neu-card";
 import { NeuButton } from "@/components/ui/neu-button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { DollarSign, Download } from "lucide-react";
+import { DollarSign, Download, User as UserIcon, TrendingUp, TrendingDown } from "lucide-react";
 import { ChipLoader } from "@/components/ui/chip-loader";
+import { List2, ListItem } from "@/components/ui/list-2";
+import { NeuBadge } from "@/components/ui/neu-badge";
 
 interface PayrollRecord {
   _id: string;
@@ -135,66 +137,59 @@ export default function AdminPayrollPage() {
               description={`No payroll generated for ${new Date(year, month - 1).toLocaleString("en-US", { month: "long" })} ${year}. Click Generate Payroll to create.`}
             />
           ) : (
-            <div className="overflow-x-auto -mx-2 px-2">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-[var(--neu-border)]">
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Employee</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Basic Salary</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Present Days</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Deductions</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Bonuses</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Net Salary</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Status</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {payroll.map((record) => (
-                    <tr key={record._id} className="border-b border-[var(--neu-border)] last:border-0">
-                      <td className="py-4 px-4">
-                        <p className="font-medium">{record.userId?.name}</p>
-                        <p className="text-sm text-[var(--neu-text-secondary)]">{record.userId?.employeeId}</p>
-                      </td>
-                      <td className="py-4 px-4">${record.basicSalary.toLocaleString()}</td>
-                      <td className="py-4 px-4">{record.presentDays}</td>
-                      <td className="py-4 px-4 text-[var(--neu-danger)]">
+            <List2 
+              items={payroll.map((record) => ({
+                icon: <UserIcon className="w-5 h-5 text-[var(--neu-accent)]" />,
+                title: record.userId?.name || "Unknown Employee",
+                category: record.userId?.employeeId || "NO ID",
+                description: (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-4 text-sm">
+                      <span className="opacity-70">Basic: ${record.basicSalary.toLocaleString()}</span>
+                      <span className="flex items-center gap-1 text-[var(--neu-danger)]">
+                        <TrendingDown className="w-3 h-3" />
                         -${(record.absentDeduction + record.lateDeduction).toLocaleString()}
-                      </td>
-                      <td className="py-4 px-4 text-[var(--neu-success)]">+${record.bonuses.toLocaleString()}</td>
-                      <td className="py-4 px-4 font-semibold">${record.netSalary.toLocaleString()}</td>
-                      <td className="py-4 px-4">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            record.status === "finalized"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-yellow-100 text-yellow-700"
-                          }`}
+                      </span>
+                      <span className="flex items-center gap-1 text-[var(--neu-success)]">
+                        <TrendingUp className="w-3 h-3" />
+                        +${record.bonuses.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="text-xl font-black text-[var(--neu-text)]">
+                      Net: <span className="text-[var(--neu-accent)]">${record.netSalary.toLocaleString()}</span>
+                      <span className="text-xs font-normal opacity-50 ml-2">({record.presentDays} Days)</span>
+                    </div>
+                  </div>
+                ),
+                status: (
+                  <div className="flex items-center gap-2">
+                    <NeuBadge variant={record.status === "finalized" ? "success" : "warning"}>
+                      {record.status.toUpperCase()}
+                    </NeuBadge>
+                    <div className="flex gap-1 ml-2">
+                      {record.status === "draft" && (
+                        <NeuButton
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => handleFinalize(record._id)}
+                          className="h-8 w-8 text-[var(--neu-accent)] hover:bg-[var(--neu-accent)]/10"
                         >
-                          {record.status}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="flex gap-2">
-                          {record.status === "draft" && (
-                            <NeuButton size="sm" onClick={() => handleFinalize(record._id)}>
-                              Finalize
-                            </NeuButton>
-                          )}
-                          <NeuButton
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => downloadPayslip(record.userId?._id || "")}
-                          >
-                            <Download className="w-4 h-4" />
-                          </NeuButton>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                          <TrendingUp className="w-4 h-4" />
+                        </NeuButton>
+                      )}
+                      <NeuButton
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => downloadPayslip(record.userId?._id || "")}
+                        className="h-8 w-8 opacity-70 hover:opacity-100"
+                      >
+                        <Download className="w-4 h-4" />
+                      </NeuButton>
+                    </div>
+                  </div>
+                )
+              }))}
+            />
           )}
         </NeuCardContent>
       </NeuCard>

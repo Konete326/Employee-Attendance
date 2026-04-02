@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { NeuCard, NeuCardContent } from "@/components/ui/neu-card";
 import { Spinner } from "@/components/ui/spinner";
 import { EmptyState } from "@/components/ui/empty-state";
-import { ClipboardCheck } from "lucide-react";
+import { ClipboardCheck, Calendar, Clock } from "lucide-react";
+import { List2, ListItem } from "@/components/ui/list-2";
+import { NeuBadge } from "@/components/ui/neu-badge";
 
 interface AttendanceRecord {
   _id: string;
@@ -40,14 +42,14 @@ export default function EmployeeAttendancePage() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case "present": return "bg-green-100 text-green-700";
-      case "late": return "bg-yellow-100 text-yellow-700";
-      case "absent": return "bg-red-100 text-red-700";
-      case "half-day": return "bg-purple-100 text-purple-700";
-      case "on-leave": return "bg-blue-100 text-blue-700";
-      default: return "bg-gray-100 text-gray-700";
+      case "present": return "present" as const;
+      case "late": return "late" as const;
+      case "absent": return "absent" as const;
+      case "half-day": return "warning" as const;
+      case "on-leave": return "accent" as const;
+      default: return "default" as const;
     }
   };
 
@@ -96,38 +98,35 @@ export default function EmployeeAttendancePage() {
               description="No attendance records found for this month."
             />
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-[var(--neu-border)]">
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Date</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Check-in</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Check-out</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Working Hours</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {records.map((record) => (
-                    <tr key={record._id} className="border-b border-[var(--neu-border)] last:border-0">
-                      <td className="py-3 px-4">{new Date(record.date).toLocaleDateString()}</td>
-                      <td className="py-3 px-4">
-                        {record.checkIn ? new Date(record.checkIn).toLocaleTimeString() : "-"}
-                      </td>
-                      <td className="py-3 px-4">
-                        {record.checkOut ? new Date(record.checkOut).toLocaleTimeString() : "-"}
-                      </td>
-                      <td className="py-3 px-4">{record.hoursWorked?.toFixed(1) || "0.0"} hrs</td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(record.status)}`}>
-                          {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <List2 
+              items={records.map((record) => ({
+                icon: <Calendar className="w-5 h-5 text-[var(--neu-accent)]" />,
+                title: new Date(record.date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+                category: "LOGGED ATTENDANCE",
+                description: (
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1 opacity-70">
+                        <Clock className="w-3.5 h-3.5" />
+                        {record.checkIn ? new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "-"}
+                      </span>
+                      <span>→</span>
+                      <span className="flex items-center gap-1 opacity-70">
+                        {record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "-"}
+                      </span>
+                      <span className="ml-2 font-bold text-[var(--neu-accent)]">
+                        {record.hoursWorked?.toFixed(1) || "0"}h
+                      </span>
+                    </div>
+                  </div>
+                ),
+                status: (
+                  <NeuBadge variant={getStatusBadgeVariant(record.status)}>
+                    {record.status}
+                  </NeuBadge>
+                )
+              }))}
+            />
           )}
         </NeuCardContent>
       </NeuCard>

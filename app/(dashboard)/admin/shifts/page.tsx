@@ -14,6 +14,8 @@ import {
   NeuTableHead,
   NeuTableCell,
 } from "@/components/ui/neu-table";
+import { EmptyState } from "@/components/ui/empty-state";
+import { List2, ListItem } from "@/components/ui/list-2";
 import { IShift } from "@/types";
 
 interface ShiftFormData {
@@ -200,50 +202,43 @@ export default function ShiftsPage() {
               <p className="text-sm mt-1">Click &quot;Add Shift&quot; to create one</p>
             </div>
           ) : (
-            <NeuTable>
-              <NeuTableHeader>
-                <NeuTableRow>
-                  <NeuTableHead>Name</NeuTableHead>
-                  <NeuTableHead>Time</NeuTableHead>
-                  <NeuTableHead>Hours</NeuTableHead>
-                  <NeuTableHead>Late Threshold</NeuTableHead>
-                  <NeuTableHead>Status</NeuTableHead>
-                  <NeuTableHead className="text-right">Actions</NeuTableHead>
-                </NeuTableRow>
-              </NeuTableHeader>
-              <NeuTableBody>
-                {shifts.map((shift) => (
-                  <NeuTableRow key={shift._id.toString()}>
-                    <NeuTableCell className="font-medium">{shift.name}</NeuTableCell>
-                    <NeuTableCell className="text-[var(--neu-text-secondary)]">
-                      {shift.startTime} - {shift.endTime}
-                    </NeuTableCell>
-                    <NeuTableCell>{shift.workingHours}h</NeuTableCell>
-                    <NeuTableCell>{shift.lateThresholdMinutes} min</NeuTableCell>
-                    <NeuTableCell>
-                      <NeuBadge variant={shift.isActive ? ("success" as const) : ("default" as const)}>
-                        {shift.isActive ? "Active" : "Inactive"}
-                      </NeuBadge>
-                    </NeuTableCell>
-                    <NeuTableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <NeuButton size="icon" variant="ghost" onClick={() => openModal(shift)}>
-                          <Pencil className="w-4 h-4" />
-                        </NeuButton>
-                        <NeuButton
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => handleDelete(shift._id.toString())}
-                          className="text-[var(--neu-danger)]"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </NeuButton>
-                      </div>
-                    </NeuTableCell>
-                  </NeuTableRow>
-                ))}
-              </NeuTableBody>
-            </NeuTable>
+            <List2 
+              items={shifts.map((shift) => ({
+                icon: <Clock className="w-5 h-5 text-[var(--neu-accent)]" />,
+                title: shift.name,
+                category: "SHIFT",
+                description: (
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold opacity-80">{shift.startTime} - {shift.endTime}</span>
+                      <span className="text-[var(--neu-accent)] font-black">({shift.workingHours}h Work)</span>
+                    </div>
+                    <div className="text-xs opacity-60">
+                      Late Threshold: {shift.lateThresholdMinutes} mins
+                    </div>
+                  </div>
+                ),
+                onClick: () => openModal(shift),
+                status: (
+                  <div className="flex items-center gap-3">
+                    <NeuBadge variant={shift.isActive ? ("success" as const) : ("default" as const)}>
+                      {shift.isActive ? "Active" : "Inactive"}
+                    </NeuBadge>
+                    <NeuButton
+                      size="icon"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(shift._id.toString());
+                      }}
+                      className="text-[var(--neu-danger)] hover:bg-[var(--neu-danger)]/10 h-8 w-8"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </NeuButton>
+                  </div>
+                )
+              }))}
+            />
           )}
         </NeuCardContent>
       </NeuCard>

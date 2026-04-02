@@ -5,7 +5,9 @@ import { NeuCard, NeuCardContent } from "@/components/ui/neu-card";
 import { NeuButton } from "@/components/ui/neu-button";
 import { Spinner } from "@/components/ui/spinner";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Calendar, XCircle } from "lucide-react";
+import { Calendar, XCircle, Clock } from "lucide-react";
+import { List2, ListItem } from "@/components/ui/list-2";
+import { NeuBadge } from "@/components/ui/neu-badge";
 
 interface LeaveRequest {
   _id: string;
@@ -96,11 +98,11 @@ export default function EmployeeLeavesPage() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case "approved": return "bg-green-100 text-green-700";
-      case "rejected": return "bg-red-100 text-red-700";
-      default: return "bg-yellow-100 text-yellow-700";
+      case "approved": return "success" as const;
+      case "rejected": return "error" as const;
+      default: return "default" as const;
     }
   };
 
@@ -158,46 +160,42 @@ export default function EmployeeLeavesPage() {
               description="You haven't applied for any leave yet."
             />
           ) : (
-            <div className="overflow-x-auto -mx-2 px-2">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-[var(--neu-border)]">
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Type</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Dates</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Days</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Status</th>
-                    <th className="text-left py-3 px-4 text-[var(--neu-text-secondary)] font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaves.map((leave) => (
-                    <tr key={leave._id} className="border-b border-[var(--neu-border)] last:border-0">
-                      <td className="py-3 px-4 capitalize">{leave.leaveType}</td>
-                      <td className="py-3 px-4">
-                        {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
-                      </td>
-                      <td className="py-3 px-4">{leave.totalDays}</td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(leave.status)}`}>
-                          {leave.status.charAt(0).toUpperCase() + leave.status.slice(1)}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">
-                        {leave.status === "pending" && (
-                          <button
-                            onClick={() => handleCancel(leave._id)}
-                            className="text-red-500 hover:text-red-700 flex items-center gap-1"
-                          >
-                            <XCircle className="w-4 h-4" />
-                            Cancel
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <List2 
+              items={leaves.map((leave) => ({
+                icon: <Calendar className="w-5 h-5 text-[var(--neu-accent)]" />,
+                title: leave.leaveType.toUpperCase(),
+                category: "LEAVE REQUEST",
+                description: (
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 opacity-80">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>{new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}</span>
+                      <span className="font-bold text-[var(--neu-accent)]">({leave.totalDays} Days)</span>
+                    </div>
+                    <div className="text-sm italic opacity-60 line-clamp-1">
+                      "{leave.reason}"
+                    </div>
+                  </div>
+                ),
+                status: (
+                  <div className="flex items-center gap-3">
+                    <NeuBadge variant={getStatusBadgeVariant(leave.status)}>
+                      {leave.status}
+                    </NeuBadge>
+                    {leave.status === "pending" && (
+                      <NeuButton
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleCancel(leave._id)}
+                        className="h-8 w-8 text-[var(--neu-danger)] hover:bg-[var(--neu-danger)]/10"
+                      >
+                        <XCircle className="w-4 h-4" />
+                      </NeuButton>
+                    )}
+                  </div>
+                )
+              }))}
+            />
           )}
         </NeuCardContent>
       </NeuCard>
