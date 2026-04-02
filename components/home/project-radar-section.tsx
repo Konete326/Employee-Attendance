@@ -126,54 +126,6 @@ export default function ProjectRadarSection() {
         <div className="absolute bottom-0 z-[41] h-px w-full bg-gradient-to-r from-transparent via-slate-600 to-transparent" />
       </div>
 
-      {/* Stats Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="mx-auto mt-12 grid max-w-2xl grid-cols-2 gap-4 sm:grid-cols-4"
-      >
-        {stats.map((s) => (
-          <div
-            key={s.label}
-            className="flex flex-col items-center justify-center rounded-2xl border border-[var(--neu-border)] bg-[var(--neu-surface)] px-4 py-5 text-center shadow-[4px_4px_8px_var(--neu-shadow-dark),-4px_-4px_8px_var(--neu-shadow-light)]"
-          >
-            <span className="bg-gradient-to-r from-[var(--neu-accent)] to-purple-400 bg-clip-text text-3xl font-extrabold text-transparent">
-              {s.value}
-            </span>
-            <span className="mt-1 text-xs font-medium text-[var(--neu-text-secondary)]">
-              {s.label}
-            </span>
-          </div>
-        ))}
-      </motion.div>
-
-      {/* Tech stack pills */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        className="mx-auto mt-8 flex flex-wrap justify-center gap-2"
-      >
-        {[
-          "Next.js 15",
-          "TypeScript",
-          "MongoDB Atlas",
-          "JWT Auth",
-          "Tailwind CSS v4",
-          "Mongoose v9",
-          "Vercel",
-        ].map((tech) => (
-          <span
-            key={tech}
-            className="rounded-full border border-[var(--neu-border)] bg-[var(--neu-surface-light)] px-3 py-1 text-xs font-medium text-[var(--neu-text-secondary)]"
-          >
-            {tech}
-          </span>
-        ))}
-      </motion.div>
     </section>
   );
 }

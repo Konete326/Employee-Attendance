@@ -115,61 +115,7 @@ export default function ParticleIntroSection() {
         ))}
       </motion.div>
 
-      {/* ── Info card row ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3"
-      >
-        {[
-          {
-            stat: "30+",
-            label: "API Routes",
-            desc: "Fully typed Next.js route handlers",
-          },
-          {
-            stat: "2",
-            label: "Roles",
-            desc: "Admin & Employee with JWT guards",
-          },
-          {
-            stat: "6",
-            label: "Modules",
-            desc: "Attendance · Leave · Payroll · Reports · Audit · Notifications",
-          },
-        ].map((item) => (
-          <div
-            key={item.label}
-            className="flex flex-col items-center rounded-2xl border border-[var(--neu-border)] px-4 py-5 text-center"
-            style={{
-              background: "var(--neu-surface)",
-              boxShadow:
-                "4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light)",
-            }}
-          >
-            <span
-              className="text-3xl font-extrabold"
-              style={{
-                background:
-                  "linear-gradient(135deg,var(--neu-accent),#c084fc)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              {item.stat}
-            </span>
-            <span className="mt-1 text-sm font-semibold text-[var(--neu-text)]">
-              {item.label}
-            </span>
-            <span className="mt-1 text-xs text-[var(--neu-text-secondary)]">
-              {item.desc}
-            </span>
-          </div>
-        ))}
-      </motion.div>
+
     </section>
   );
 }
