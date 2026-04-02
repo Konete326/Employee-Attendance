@@ -338,7 +338,7 @@ export const FlickeringFooter = () => {
             <Icons.logo className="size-8" />
             <p className="text-xl font-semibold text-[var(--neu-text)]">AttendEase</p>
           </Link>
-          <p className="tracking-tight text-[var(--neu-text-secondary)] font-medium">
+          <p className="tracking-tight text-white/80 font-medium">
             {siteConfig.hero.description}
           </p>
         </div>

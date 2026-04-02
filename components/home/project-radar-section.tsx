@@ -83,7 +83,7 @@ export default function ProjectRadarSection() {
             Manage Attendance
           </span>
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm text-[var(--neu-text-secondary)] md:text-base">
+        <p className="mx-auto mt-3 max-w-xl text-sm text-white md:text-base opacity-90">
           AttendEase is a complete Role-Based HR platform — built for small to
           mid-sized teams who need powerful tools without the enterprise price
           tag.
