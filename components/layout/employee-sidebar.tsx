@@ -74,13 +74,12 @@ export function EmployeeSidebar() {
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={cn(
-            "hidden lg:flex absolute right-2 top-4 w-8 h-8 bg-[var(--neu-surface)] rounded-lg items-center justify-center text-[var(--neu-text-secondary)] shadow-sm z-50 hover:bg-[var(--neu-accent)] hover:text-white transition-all",
-            "border border-white/5",
-            isCollapsed && "right-[-40px] bg-[var(--neu-accent)] text-white"
+            "hidden lg:flex absolute right-[-14px] top-[74px] w-7 h-7 bg-[var(--neu-accent)] rounded-full items-center justify-center text-white shadow-lg z-50 hover:scale-110 transition-all duration-200 border-2 border-[var(--neu-bg)]",
+            isCollapsed && "rotate-180" // Simple way to toggle icon direction if using same icon
           )}
           title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>
 
         {/* Nav items */}

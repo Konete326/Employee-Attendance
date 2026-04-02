@@ -8,6 +8,7 @@ import { NeuTable, NeuTableHeader, NeuTableBody, NeuTableRow, NeuTableHead, NeuT
 import { NeuBadge } from "@/components/ui/neu-badge";
 import { NeuButton } from "@/components/ui/neu-button";
 import CheckInOutPanel from "@/components/attendance/check-in-out-panel";
+import { ChipLoader } from "@/components/ui/chip-loader";
 
 interface User {
   _id: string;
@@ -193,26 +194,20 @@ export default function EmployeeDashboard() {
         <NeuCardHeader>
           <div className="flex items-center justify-between">
             <NeuCardTitle>Recent Attendance</NeuCardTitle>
-            <div className="flex items-center gap-2">
-              <NeuButton size="icon" variant="ghost" onClick={handlePreviousMonth}>
-                <ChevronLeft className="w-5 h-5" />
-              </NeuButton>
-              <span className="text-sm font-medium text-[var(--neu-text)] min-w-[140px] text-center">
-                {currentMonth ? getMonthName(currentMonth) : ""}
-              </span>
-              <NeuButton size="icon" variant="ghost" onClick={handleNextMonth}>
-                <ChevronRight className="w-5 h-5" />
-              </NeuButton>
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium text-[var(--neu-text-secondary)]">Month:</label>
+              <input
+                type="month"
+                value={currentMonth}
+                onChange={(e) => setCurrentMonth(e.target.value)}
+                className="px-3 py-1.5 rounded-lg border border-[var(--neu-border)] bg-[var(--neu-bg)] text-sm font-medium text-[var(--neu-text)] focus:outline-none focus:ring-2 focus:ring-[var(--neu-accent)]/20 transition-all"
+              />
             </div>
           </div>
         </NeuCardHeader>
         <NeuCardContent>
           {loading ? (
-            <div className="space-y-3">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-12 bg-[var(--neu-surface-light)] rounded-lg animate-pulse" />
-              ))}
-            </div>
+            <ChipLoader size="sm" />
           ) : records.length === 0 ? (
             <p className="text-center text-[var(--neu-text-muted)] py-8">
               No attendance records for this month

@@ -2,6 +2,7 @@
 
 import { UserCheck, UserX, Clock, TrendingUp, Timer, Users } from "lucide-react";
 import { NeuStatCard } from "@/components/ui/neu-stat-card";
+import { ChipLoader } from "@/components/ui/chip-loader";
 
 interface AttendanceStatsData {
   totalEmployees: number;
@@ -23,16 +24,7 @@ interface AttendanceStatsProps {
 
 export function AttendanceStats({ stats, isLoading }: AttendanceStatsProps) {
   if (isLoading || !stats) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="h-32 rounded-[var(--neu-radius)] bg-[var(--neu-surface)] animate-pulse"
-          />
-        ))}
-      </div>
-    );
+    return <ChipLoader size="md" />;
   }
 
   const getTrend = (value: number): "up" | "down" | "neutral" => {

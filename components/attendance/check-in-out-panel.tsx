@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Clock, LogIn, LogOut, CheckCircle } from "lucide-react";
+import { ChipLoader } from "@/components/ui/chip-loader";
 import { NeuCard, NeuCardContent } from "@/components/ui/neu-card";
 import { NeuButton } from "@/components/ui/neu-button";
 import { NeuBadge } from "@/components/ui/neu-badge";
@@ -185,7 +186,9 @@ export default function CheckInOutPanel() {
 
           {/* Action Button */}
           {initialLoading ? (
-            <div className="w-48 h-14 rounded-xl bg-[var(--neu-surface-light)] animate-pulse" />
+            <div className="w-full">
+              <ChipLoader size="sm" />
+            </div>
           ) : isCompleted ? (
             <NeuButton
               size="lg"
