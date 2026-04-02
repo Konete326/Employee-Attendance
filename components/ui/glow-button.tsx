@@ -51,77 +51,79 @@ const GlowButton = React.forwardRef<HTMLButtonElement, GlowButtonProps>(
         }}
         {...props}
       >
-        {/* Glow Layer */}
-        <div
-          className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-100 group-hover:opacity-0"
-          style={{
-            background: "radial-gradient(15% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
-            borderRadius: "inherit",
-            filter: "blur(15px)",
-          }}
-        />
-
-        {/* Glow Hover Layer */}
-        <div
-          className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-0 group-hover:opacity-100"
-          style={{
-            background: "radial-gradient(60.6% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
-            borderRadius: "inherit",
-            filter: "blur(18px)",
-          }}
-        />
-
-        {/* Stroke Layer */}
-        <div
-          className="absolute inset-0 pointer-events-none will-change-auto transition-opacity ease-in-out duration-[1200ms] opacity-100 group-hover:opacity-0"
-          style={{
-            background: "radial-gradient(10.7% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
-            borderRadius: "inherit",
-          }}
-        />
-
-        {/* Stroke Hover Layer */}
-        <div
-          className="absolute inset-0 pointer-events-none will-change-auto transition-opacity ease-in-out duration-[1200ms] opacity-0 group-hover:opacity-100"
-          style={{
-            background: "radial-gradient(60.1% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
-            borderRadius: "inherit",
-          }}
-        />
-
-        {/* Fill Layer */}
-        <div
-          className="absolute inset-[1px] pointer-events-none z-10 rounded-[inherit]"
-          style={{
-            backgroundColor: "rgb(0, 0, 0)",
-            opacity: 1,
-            filter: "brightness(1.1)",
-          }}
-        />
-
-        {/* Text Content */}
-        <div className="relative z-20 flex items-center justify-center opacity-100 gap-2 shrink-0 px-4">
-          {loading && (
-            <svg
-              className="animate-spin h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-          )}
-          <span
-            className="tracking-wide"
+        <span className="relative w-full h-full flex items-center justify-center">
+          {/* Glow Layer */}
+          <div
+            className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-100 group-hover:opacity-0"
             style={{
-              WebkitFontSmoothing: "antialiased",
-              textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+              background: "radial-gradient(15% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
+              borderRadius: "inherit",
+              filter: "blur(15px)",
             }}
-          >
-            {children}
-          </span>
-        </div>
+          />
+
+          {/* Glow Hover Layer */}
+          <div
+            className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-0 group-hover:opacity-100"
+            style={{
+              background: "radial-gradient(60.6% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
+              borderRadius: "inherit",
+              filter: "blur(18px)",
+            }}
+          />
+
+          {/* Stroke Layer */}
+          <div
+            className="absolute inset-0 pointer-events-none will-change-auto transition-opacity ease-in-out duration-[1200ms] opacity-100 group-hover:opacity-0"
+            style={{
+              background: "radial-gradient(10.7% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
+              borderRadius: "inherit",
+            }}
+          />
+
+          {/* Stroke Hover Layer */}
+          <div
+            className="absolute inset-0 pointer-events-none will-change-auto transition-opacity ease-in-out duration-[1200ms] opacity-0 group-hover:opacity-100"
+            style={{
+              background: "radial-gradient(60.1% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
+              borderRadius: "inherit",
+            }}
+          />
+
+          {/* Fill Layer */}
+          <div
+            className="absolute inset-[1px] pointer-events-none z-10 rounded-[inherit]"
+            style={{
+              backgroundColor: "rgb(0, 0, 0)",
+              opacity: 1,
+              filter: "brightness(1.1)",
+            }}
+          />
+
+          {/* Text Content */}
+          <div className="relative z-20 flex items-center justify-center opacity-100 gap-2 shrink-0 px-4">
+            {loading && (
+              <svg
+                className="animate-spin h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            )}
+            <span
+              className="tracking-wide"
+              style={{
+                WebkitFontSmoothing: "antialiased",
+                textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+              }}
+            >
+              {children}
+            </span>
+          </div>
+        </span>
       </Comp>
     );
   }

@@ -199,49 +199,51 @@ const Button = React.forwardRef<
         }}
         {...props}
       >
-        {/* Glow Layers - only for non-ghost/link buttons */}
-        {variant !== "ghost" && (
-          <>
-            <div
-              className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-100 group-hover:opacity-0"
-              style={{
-                background: "radial-gradient(15% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
-                borderRadius: "inherit",
-                filter: "blur(15px)",
-              }}
-            />
-            <div
-              className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-0 group-hover:opacity-100"
-              style={{
-                background: "radial-gradient(60.6% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
-                borderRadius: "inherit",
-                filter: "blur(18px)",
-              }}
-            />
-          </>
-        )}
+        <span className="relative w-full h-full flex items-center justify-center">
+          {/* Glow Layers - only for non-ghost/link buttons */}
+          {variant !== "ghost" && (
+            <>
+              <div
+                className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-100 group-hover:opacity-0"
+                style={{
+                  background: "radial-gradient(15% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
+                  borderRadius: "inherit",
+                  filter: "blur(15px)",
+                }}
+              />
+              <div
+                className="absolute inset-0 pointer-events-none transition-opacity ease-in-out duration-[1200ms] opacity-0 group-hover:opacity-100"
+                style={{
+                  background: "radial-gradient(60.6% 50% at 50% 100%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%)",
+                  borderRadius: "inherit",
+                  filter: "blur(18px)",
+                }}
+              />
+            </>
+          )}
 
-        {/* Fill Layer */}
-        <div
-          className="absolute inset-[1px] pointer-events-none z-10 rounded-[inherit]"
-          style={{
-            backgroundColor: variant === "ghost" ? "transparent" : "rgb(0, 0, 0)",
-            opacity: 1,
-          }}
-        />
-
-        {/* Text Content */}
-        <div className="relative z-20 flex items-center justify-center opacity-100 gap-2 shrink-0 px-4">
-          <span
-            className={cn("tracking-wide", variant === "ghost" ? "text-[var(--neu-accent)]" : "text-white")}
+          {/* Fill Layer */}
+          <div
+            className="absolute inset-[1px] pointer-events-none z-10 rounded-[inherit]"
             style={{
-              WebkitFontSmoothing: "antialiased",
-              textShadow: variant === "ghost" ? "none" : "0 1px 2px rgba(0,0,0,0.5)",
+              backgroundColor: variant === "ghost" ? "transparent" : "rgb(0, 0, 0)",
+              opacity: 1,
             }}
-          >
-            {children}
-          </span>
-        </div>
+          />
+
+          {/* Text Content */}
+          <div className="relative z-20 flex items-center justify-center opacity-100 gap-2 shrink-0 px-4">
+            <span
+              className={cn("tracking-wide", variant === "ghost" ? "text-[var(--neu-accent)]" : "text-white")}
+              style={{
+                WebkitFontSmoothing: "antialiased",
+                textShadow: variant === "ghost" ? "none" : "0 1px 2px rgba(0,0,0,0.5)",
+              }}
+            >
+              {children}
+            </span>
+          </div>
+        </span>
       </Comp>
     );
   }
