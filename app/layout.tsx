@@ -3,6 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/neu-toast";
 import { AnimatedBackground } from "@/components/ui/animated-background";
+import dynamic from "next/dynamic";
+
+const MagicCursor = dynamic(
+  () => import("@/components/ui/magic-cursor").then((m) => ({ default: m.MagicCursor })),
+  { ssr: false }
+);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +45,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-black">
         <AnimatedBackground />
+        <MagicCursor />
         <SidebarProvider>
           <ToastProvider>{children}</ToastProvider>
         </SidebarProvider>

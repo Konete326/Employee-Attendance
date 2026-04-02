@@ -105,3 +105,49 @@ html {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+/* ── Magic Cursor Sparkle Animations ── */
+@keyframes fall-1 {
+  0% {
+    transform: translate(0px, 0px) rotateX(45deg) rotateY(30deg) rotateZ(0deg) scale(0.2);
+    opacity: 0;
+  }
+  6% {
+    transform: translate(8px, -10px) rotateX(45deg) rotateY(30deg) rotateZ(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(22px, 190px) rotateX(180deg) rotateY(270deg) rotateZ(90deg) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes fall-2 {
+  0% {
+    transform: translate(0px, 0px) rotateX(-20deg) rotateY(10deg) scale(0.2);
+    opacity: 0;
+  }
+  10% {
+    transform: translate(-8px, -6px) rotateX(-20deg) rotateY(10deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-12px, 155px) rotateX(-90deg) rotateY(45deg) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes fall-3 {
+  0% {
+    transform: translate(0px, 0px) rotateX(0deg) rotateY(45deg) scale(0.4);
+    opacity: 0;
+  }
+  14% {
+    transform: translate(6px, 4px) rotateX(0deg) rotateY(45deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(18px, 115px) rotateX(-180deg) rotateY(-90deg) scale(0.4);
+    opacity: 0;
+  }
+}
