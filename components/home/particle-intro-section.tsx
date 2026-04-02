@@ -2,8 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { GlowButton } from "@/components/ui/glow-button";
 
 // ssr:false because it touches canvas / requestAnimationFrame
 const ParticleTextEffect = dynamic(
@@ -79,22 +77,6 @@ export default function ParticleIntroSection() {
         />
       </motion.div>
 
-      {/* ── CTA Buttons ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-20"
-      >
-        <GlowButton asChild size="lg">
-          <Link href="/login">Get Started</Link>
-        </GlowButton>
-        <GlowButton asChild variant="ghost" size="lg">
-          <Link href="/register">Register</Link>
-        </GlowButton>
-      </motion.div>
-
       {/* ── Feature pills (cycle labels) ── */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -114,8 +96,6 @@ export default function ParticleIntroSection() {
           </span>
         ))}
       </motion.div>
-
-
     </section>
   );
 }
