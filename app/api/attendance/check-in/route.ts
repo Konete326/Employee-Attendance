@@ -17,9 +17,31 @@ export async function POST(
 
     await connectDB();
 
-    const todayStr = new Date().toISOString().split("T")[0];
+    const now = new Date();
+    const todayStr = now.toISOString().split("T")[0];
 
-    // Check if already checked in today
+    // 1. Auto-checkout dangling sessions from previous days (> 12 hours)
+    // Find any record from this user that HAS NO checkout and was created more than 12 hours ago
+    const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
+    const danglingRecord = await Attendance.findOne({
+      userId: user.userId,
+      checkOut: null,
+      checkIn: { $lt: twelveHoursAgo }
+    });
+
+    if (danglingRecord) {
+      // Auto checkout at +12 hours from check-in or right now
+      const autoCheckOutTime = new Date(danglingRecord.checkIn.getTime() + 12 * 60 * 60 * 1000);
+      danglingRecord.checkOut = autoCheckOutTime > now ? now : autoCheckOutTime;
+      danglingRecord.workingMinutes = 12 * 60; // Max 12 hours
+      danglingRecord.hoursWorked = 12;
+      danglingRecord.notes = danglingRecord.notes 
+        ? `${danglingRecord.notes} | Auto-checkout after 12h` 
+        : "Auto-checkout after 12h";
+      await danglingRecord.save();
+    }
+
+    // 2. Check if already checked in today (Strict: 1 check-in per day)
     const existingRecord = await Attendance.findOne({
       userId: user.userId,
       date: todayStr,
@@ -29,42 +51,44 @@ export async function POST(
       return NextResponse.json<ApiResponse<never>>(
         {
           success: false,
-          error: "Already checked in today",
+          error: "You have already checked in for today. Multiple check-ins per day are not allowed.",
           code: "ALREADY_CHECKED_IN",
         },
         { status: 400 }
       );
     }
 
-    // Get user with shift info
-    const userDoc = await User.findById(user.userId).populate("shift");
+    // 3. Get user with shift info (Handle BSON error if shift is a legacy string)
+    let userDoc;
     let isLate = false;
-    
-    if (userDoc?.shift) {
-      const shift = userDoc.shift as { startTime: string; lateThresholdMinutes: number };
-      const [shiftHour, shiftMinute] = shift.startTime.split(":").map(Number);
-      const now = new Date();
-      const checkInHour = now.getHours();
-      const checkInMinute = now.getMinutes();
+    try {
+      userDoc = await User.findById(user.userId).populate("shift").exec();
       
-      // Calculate minutes since shift start
-      const shiftStartMinutes = shiftHour * 60 + shiftMinute;
-      const checkInMinutes = checkInHour * 60 + checkInMinute;
-      const minutesLate = checkInMinutes - shiftStartMinutes;
-      
-      // Mark as late if beyond threshold
-      isLate = minutesLate > (shift.lateThresholdMinutes || 15);
+      if (userDoc?.shift && typeof userDoc.shift === 'object') {
+        const shift = userDoc.shift as any;
+        if (shift.startTime) {
+          const [shiftHour, shiftMinute] = shift.startTime.split(":").map(Number);
+          const checkInHour = now.getHours();
+          const checkInMinute = now.getMinutes();
+          
+          const shiftStartMinutes = shiftHour * 60 + shiftMinute;
+          const checkInMinutes = checkInHour * 60 + checkInMinute;
+          const minutesLate = checkInMinutes - shiftStartMinutes;
+          
+          isLate = minutesLate > (shift.lateThresholdMinutes || 15);
+        }
+      }
+    } catch (e) {
+      console.error("Migration/Populate warning in check-in:", e);
+      // Fallback: Skip late calculation if shift data is corrupted/legacy
+      userDoc = await User.findById(user.userId).exec();
     }
 
     // Parse request body
     let body: CheckInRequestBody = {};
     try {
       body = await request.json();
-    } catch {
-      // Empty body is fine
-    }
-
-    const now = new Date();
+    } catch { }
 
     // Create attendance record
     const attendance = await Attendance.create({
@@ -92,6 +116,19 @@ export async function POST(
     );
   } catch (error) {
     console.error("Check-in error:", error);
+    
+    // Check if it's a BSON Error specifically
+    if (error instanceof Error && error.message.includes("Cast to ObjectId failed")) {
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Your profile has outdated data. Please update your profile or contact admin to fix your Shift/Department info.",
+          code: "LEGACY_DATA_ERROR",
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json<ApiResponse<never>>(
       {
         success: false,

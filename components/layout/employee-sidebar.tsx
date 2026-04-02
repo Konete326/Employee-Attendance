@@ -11,8 +11,11 @@ import {
   Bell,
   Menu,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
+import { useSidebar } from "@/lib/SidebarContext";
 
 const navItems = [
   { name: "My Dashboard", href: "/employee", icon: LayoutDashboard },
@@ -25,6 +28,7 @@ const navItems = [
 export function EmployeeSidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { isEmployeeCollapsed: isCollapsed, setIsEmployeeCollapsed: setIsCollapsed } = useSidebar();
 
   return (
     <>
@@ -47,7 +51,8 @@ export function EmployeeSidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 h-screen w-64 bg-[var(--neu-bg)]/90 backdrop-blur-md border-r border-[var(--neu-border)] z-40 transition-transform duration-300",
+          "fixed left-0 top-0 h-screen bg-[var(--neu-bg)]/90 backdrop-blur-md border-r border-[var(--neu-border)] z-40 transition-all duration-300",
+          isCollapsed ? "w-20" : "w-64",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
@@ -57,10 +62,26 @@ export function EmployeeSidebar() {
             <img 
               src="/logo.png" 
               alt="AttendEase Logo" 
-              className="h-12 w-auto object-contain mx-auto" 
+              className={cn(
+                "transition-all duration-300",
+                isCollapsed ? "w-10 h-10 object-contain" : "h-12 w-auto object-contain"
+              )} 
             />
           </Link>
         </div>
+
+        {/* Toggle button */}
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className={cn(
+            "hidden lg:flex absolute right-2 top-4 w-8 h-8 bg-[var(--neu-surface)] rounded-lg items-center justify-center text-[var(--neu-text-secondary)] shadow-sm z-50 hover:bg-[var(--neu-accent)] hover:text-white transition-all",
+            "border border-white/5",
+            isCollapsed && "right-[-40px] bg-[var(--neu-accent)] text-white"
+          )}
+          title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        >
+          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </button>
 
         {/* Nav items */}
         <nav className="p-4 space-y-2">
@@ -81,7 +102,7 @@ export function EmployeeSidebar() {
                 )}
               >
                 <Icon size={20} />
-                <span className="font-medium">{item.name}</span>
+                {!isCollapsed && <span className="font-medium">{item.name}</span>}
               </Link>
             );
           })}

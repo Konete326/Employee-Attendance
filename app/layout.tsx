@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { SidebarProvider } from "@/lib/SidebarContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,7 +39,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-black">
         <AnimatedBackground />
-        <ToastProvider>{children}</ToastProvider>
+        <SidebarProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </SidebarProvider>
       </body>
     </html>
   );

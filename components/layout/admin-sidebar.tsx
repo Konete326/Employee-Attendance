@@ -20,6 +20,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
+import { useSidebar } from "@/lib/SidebarContext";
 
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -37,7 +38,7 @@ const navItems = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { isAdminCollapsed: isCollapsed, setIsAdminCollapsed: setIsCollapsed } = useSidebar();
 
   return (
     <>
