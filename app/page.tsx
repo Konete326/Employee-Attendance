@@ -8,6 +8,7 @@ import { NeuButton } from "@/components/ui/neu-button";
 import ProjectRadarSection from "@/components/home/project-radar-section";
 import { FlickeringFooter } from "@/components/ui/flickering-footer";
 import { BentoGrid, attendEaseBentoItems, statsBentoItems } from "@/components/ui/bento-grid";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -112,6 +113,9 @@ export default function Home() {
         {/* Footer */}
         <FlickeringFooter />
       </main>
+
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   );
 }
