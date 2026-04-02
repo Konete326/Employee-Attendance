@@ -6,6 +6,8 @@ import ProjectRadarSection from "@/components/home/project-radar-section";
 import ParticleIntroSection from "@/components/home/particle-intro-section";
 import { FlickeringFooter } from "@/components/ui/flickering-footer";
 import { BentoGrid, attendEaseBentoItems, statsBentoItems } from "@/components/ui/bento-grid";
+import { Home, BarChart3, LayoutGrid, User } from "lucide-react";
+import { NavBar } from "@/components/ui/tube-light-navbar";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 export default function Home() {
@@ -15,8 +17,18 @@ export default function Home() {
     setMounted(true);
   }, []);
 
+  const navItems = [
+    { name: "Home", url: "#", icon: Home },
+    { name: "Stats", url: "#stats", icon: BarChart3 },
+    { name: "Features", url: "#features", icon: LayoutGrid },
+    { name: "Portal", url: "/login", icon: User },
+  ];
+
   return (
-    <div className="relative flex flex-col min-h-screen">
+    <div id="top" className="relative flex flex-col min-h-screen">
+      {/* Navbar */}
+      <NavBar items={navItems} />
+
       {/* Neural Background - Fixed behind all content */}
       <div className="fixed inset-0 z-0">
         <NeuralBackground
@@ -35,7 +47,7 @@ export default function Home() {
 
 
         {/* Stats Section - Bento Grid */}
-        <section className="px-4 py-8">
+        <section id="stats" className="px-4 py-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-[var(--neu-text)] mb-2">
               Powerful & Scalable
@@ -48,7 +60,7 @@ export default function Home() {
         </section>
 
         {/* Main Features - Bento Grid */}
-        <section className="px-4 py-8">
+        <section id="features" className="px-4 py-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-[var(--neu-text)] mb-2">
               Complete HR Platform
