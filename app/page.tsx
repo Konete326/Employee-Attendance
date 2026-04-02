@@ -6,7 +6,7 @@ import ProjectRadarSection from "@/components/home/project-radar-section";
 import ParticleIntroSection from "@/components/home/particle-intro-section";
 import { FlickeringFooter } from "@/components/ui/flickering-footer";
 import { BentoGrid, attendEaseBentoItems, statsBentoItems } from "@/components/ui/bento-grid";
-import { Home, BarChart3, LayoutGrid, User } from "lucide-react";
+import { Home as HomeIcon, BarChart3, LayoutGrid, User } from "lucide-react";
 import { NavBar } from "@/components/ui/tube-light-navbar";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
@@ -18,7 +18,7 @@ export default function Home() {
   }, []);
 
   const navItems = [
-    { name: "Home", url: "#", icon: Home },
+    { name: "Home", url: "#", icon: HomeIcon },
     { name: "Stats", url: "#stats", icon: BarChart3 },
     { name: "Features", url: "#features", icon: LayoutGrid },
     { name: "Portal", url: "/login", icon: User },

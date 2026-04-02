@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 interface NavItem {
   name: string;
   url: string;
-  icon: LucideIcon;
+  icon: React.ElementType;
 }
 
 interface NavBarProps {
