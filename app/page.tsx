@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Clock } from "lucide-react";
 import NeuralBackground from "@/components/ui/flow-field-background";
-import { GlowButton } from "@/components/ui/glow-button";
 import ProjectRadarSection from "@/components/home/project-radar-section";
 import ParticleIntroSection from "@/components/home/particle-intro-section";
 import { FlickeringFooter } from "@/components/ui/flickering-footer";
@@ -35,51 +32,7 @@ export default function Home() {
         {/* Particle Text Intro Section (Hero) */}
         <ParticleIntroSection />
 
-        {/* Descriptive Hero Section */}
-        <section className="flex flex-col items-center justify-center px-4 py-16">
-          <div
-            className={`text-center max-w-3xl mx-auto transition-all duration-700 ease-out ${
-              mounted
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-4"
-            }`}
-          >
-            {/* Logo/Icon */}
-            <div className="mb-6">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[var(--neu-surface)] shadow-[8px_8px_16px_var(--neu-shadow-dark),-8px_-8px_16px_var(--neu-shadow-light)]">
-                <Clock className="w-10 h-10 text-[var(--neu-accent)]" />
-              </div>
-            </div>
 
-            {/* Title */}
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-[var(--neu-accent)] to-purple-400 bg-clip-text text-transparent">
-                AttendEase Management
-              </span>
-            </h2>
-
-            {/* Subtitle */}
-            <p className="text-lg md:text-xl text-[var(--neu-text)] mb-3">
-              Smart Employee Attendance Management
-            </p>
-
-            {/* Description */}
-            <p className="text-base md:text-lg text-[var(--neu-text-muted)] mb-8 max-w-xl mx-auto">
-              Track attendance, manage employees, and generate detailed reports
-              — all in one place.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-4">
-              <GlowButton asChild size="lg">
-                <Link href="/login">Get Started</Link>
-              </GlowButton>
-              <GlowButton asChild variant="ghost" size="lg">
-                <Link href="/register">Register</Link>
-              </GlowButton>
-            </div>
-          </div>
-        </section>
 
         {/* Stats Section - Bento Grid */}
         <section className="px-4 py-8">
