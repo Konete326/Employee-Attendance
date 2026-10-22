@@ -25,6 +25,14 @@ interface LoginResponse {
     department: string;
     createdAt: string;
   };
+    data?: {
+    _id: string;
+    name: string;
+    email: string;
+    role: "admin" | "employee";
+    department: string;
+    createdAt: string;
+  };
 }
 
 export default function LoginForm() {
